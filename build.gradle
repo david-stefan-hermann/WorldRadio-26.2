@@ -1,0 +1,151 @@
+plugins {
+    id 'net.fabricmc.fabric-loom' version '1.17.0-alpha.7'
+    id 'me.modmuss50.mod-publish-plugin' version '1.0.0'
+}
+
+version = project.mod_version
+group = project.maven_group
+
+repositories {
+    mavenCentral()
+}
+
+loom {
+    splitEnvironmentSourceSets()
+    mods {
+        worldradio {
+            sourceSet sourceSets.main
+            sourceSet sourceSets.client
+        }
+    }
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+    // MP3 decoder (LGPL, bundled unmodified as a nested jar).
+    clientImplementation "javazoom:jlayer:1.0.1"
+    include "javazoom:jlayer:1.0.1"
+}
+
+// `./gradlew runServer -PdevScreenshot` + `./gradlew runClient -PdevScreenshot`: the client joins the dev server on
+// localhost:25598, the server teleports the joining player to the view point, the client saves a screenshot and
+// quits (see worldradio.DevHooks and worldradio.client.DevClientHooks).
+if (project.hasProperty('devScreenshot')) {
+    def view = project.hasProperty('devView') ? project.devView : "0.5,-59,-6.5,0,20"
+    def shot = project.hasProperty('devShot') ? project.devShot : "radio"
+    loom {
+        runs {
+            client {
+                vmArg "-Dworldradio.dev.view=${view}"
+                vmArg "-Dworldradio.dev.screenshot=${shot}"
+                if (project.hasProperty('devScreen')) vmArg "-Dworldradio.dev.screen=${project.devScreen}"
+                if (project.hasProperty('devTicks')) vmArg "-Dworldradio.dev.ticks=${project.devTicks}"
+                if (project.hasProperty('devWalk')) vmArg "-Dworldradio.dev.walk=${project.devWalk}"
+                if (project.hasProperty('devStar')) vmArg "-Dworldradio.dev.star=1"
+                if (project.hasProperty('devPower')) vmArg "-Dworldradio.dev.power=1"
+                if (project.hasProperty('devClick')) vmArg "-Dworldradio.dev.click=${project.devClick}"
+                if (project.hasProperty('devRename')) vmArg "-Dworldradio.dev.rename=${project.devRename}"
+                if (project.hasProperty('devEnter')) vmArg "-Dworldradio.dev.enter=1"
+                if (project.hasProperty('devVolume')) vmArg "-Dworldradio.dev.volume=${project.devVolume}"
+                if (project.hasProperty('devType')) vmArg "-Dworldradio.dev.type=${project.devType}"
+                if (project.hasProperty('devKey')) vmArg "-Dworldradio.dev.key=${project.devKey}"
+                if (project.hasProperty('devOrbit')) vmArg "-Dworldradio.dev.orbit=${project.devOrbit}"
+                if (project.hasProperty('devUse')) vmArg "-Dworldradio.dev.use=${project.devUse}"
+                if (project.hasProperty('devHover')) vmArg "-Dworldradio.dev.hover=1"
+                if (project.hasProperty('devSearch')) vmArg "-Dworldradio.dev.search=${project.devSearch}"
+                if (project.hasProperty('devCountry')) vmArg "-Dworldradio.dev.country=${project.devCountry}"
+                programArgs "--quickPlayMultiplayer", "localhost:25598", "--width", "1280", "--height", "720"
+            }
+            server {
+                vmArg "-Dworldradio.dev.view=${view}"
+                if (project.hasProperty('devHold')) vmArg "-Dworldradio.dev.hold=${project.devHold}"
+            }
+        }
+    }
+}
+
+processResources {
+    inputs.property "version", project.version
+    inputs.property "loader_version", project.loader_version
+    filteringCharset "UTF-8"
+
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version,
+                "loader_version": project.loader_version
+    }
+}
+
+def targetJavaVersion = 25
+tasks.withType(JavaCompile).configureEach {
+    it.options.encoding = "UTF-8"
+    it.options.release = targetJavaVersion
+}
+
+base {
+    archivesName = project.archives_base_name
+}
+
+java {
+    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
+    if (JavaVersion.current() < javaVersion) {
+        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+    }
+}
+
+jar {
+    from("LICENSE") {
+        rename { "${it}_${project.archives_base_name}" }
+    }
+}
+
+// `./gradlew publishMods` uploads build/libs/<jar> to Modrinth and CurseForge. Tokens and project ids live in
+// ~/.gradle/gradle.properties (wr.modrinth.token / wr.modrinth.projectId / wr.curseforge.token /
+// wr.curseforge.projectId), never in the repository. A platform without a project id is skipped. The changelog
+// is the top section of CHANGELOG.md.
+publishMods {
+    file = tasks.named('jar').flatMap { it.archiveFile }
+    changelog = provider { topChangelogSection() }
+    type = STABLE
+    displayName = "World Radio ${project.version}"
+    version = project.version.toString()
+    modLoaders.add("fabric")
+
+    if (project.hasProperty('wr.modrinth.projectId')) {
+        modrinth {
+            accessToken = providers.gradleProperty("wr.modrinth.token")
+            projectId = providers.gradleProperty("wr.modrinth.projectId")
+            minecraftVersions.add(project.minecraft_version)
+            requires("fabric-api")
+        }
+    }
+    if (project.hasProperty('wr.curseforge.projectId')) {
+        curseforge {
+            accessToken = providers.gradleProperty("wr.curseforge.token")
+            projectId = providers.gradleProperty("wr.curseforge.projectId")
+            minecraftVersions.add(project.minecraft_version)
+            javaVersions.add(JavaVersion.VERSION_25)
+            clientRequired = true
+            serverRequired = true
+            requires("fabric-api")
+        }
+    }
+}
+
+/** First "## " section of CHANGELOG.md, without its heading. */
+String topChangelogSection() {
+    def lines = file("CHANGELOG.md").readLines()
+    def out = []
+    boolean inSection = false
+    for (line in lines) {
+        if (line.startsWith("## ")) {
+            if (inSection) break
+            inSection = true
+            continue
+        }
+        if (inSection) out << line
+    }
+    return out.join("\n").trim()
+}

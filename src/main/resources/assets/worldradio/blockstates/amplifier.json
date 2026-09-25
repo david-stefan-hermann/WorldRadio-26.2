@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north,level=0": { "model": "worldradio:block/amplifier_0" },
+    "facing=east,level=0": { "model": "worldradio:block/amplifier_0", "y": 90 },
+    "facing=south,level=0": { "model": "worldradio:block/amplifier_0", "y": 180 },
+    "facing=west,level=0": { "model": "worldradio:block/amplifier_0", "y": 270 },
+    "facing=north,level=1": { "model": "worldradio:block/amplifier_1" },
+    "facing=east,level=1": { "model": "worldradio:block/amplifier_1", "y": 90 },
+    "facing=south,level=1": { "model": "worldradio:block/amplifier_1", "y": 180 },
+    "facing=west,level=1": { "model": "worldradio:block/amplifier_1", "y": 270 },
+    "facing=north,level=2": { "model": "worldradio:block/amplifier_2" },
+    "facing=east,level=2": { "model": "worldradio:block/amplifier_2", "y": 90 },
+    "facing=south,level=2": { "model": "worldradio:block/amplifier_2", "y": 180 },
+    "facing=west,level=2": { "model": "worldradio:block/amplifier_2", "y": 270 },
+    "facing=north,level=3": { "model": "worldradio:block/amplifier_3" },
+    "facing=east,level=3": { "model": "worldradio:block/amplifier_3", "y": 90 },
+    "facing=south,level=3": { "model": "worldradio:block/amplifier_3", "y": 180 },
+    "facing=west,level=3": { "model": "worldradio:block/amplifier_3", "y": 270 }
+  }
+}

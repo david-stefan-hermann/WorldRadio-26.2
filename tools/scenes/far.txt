@@ -1,0 +1,9 @@
+forceload add -32 -32 32 32
+time set noon
+weather clear
+kill @e[type=!minecraft:player]
+fill -10 -60 -4 10 -40 8 air
+setblock 0 -60 0 worldradio:radio[facing=south]
+fill 0 -59 0 0 -52 0 iron_bars
+worldradio tune 0 -60 0 "http://stream.kissfm.de/kissfm/mp3-128/internetradio/" Kiss FM
+forceload remove all

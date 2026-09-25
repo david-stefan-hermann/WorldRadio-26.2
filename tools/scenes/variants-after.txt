@@ -1,0 +1,2 @@
+sleep:6000
+worldradio tune -1 -60 0 "http://stream.kissfm.de/kissfm/mp3-128/internetradio/" Kiss FM

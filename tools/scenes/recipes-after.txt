@@ -1,0 +1,6 @@
+execute if entity @a[advancements={worldradio:recipes/redstone/amplifier=true}]
+recipe give @a worldradio:radio
+give @a minecraft:copper_ingot
+sleep:2000
+execute if entity @a[advancements={worldradio:recipes/redstone/amplifier=true}]
+execute if entity @a[advancements={worldradio:recipes/redstone/radio=true}]

@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/orientable_with_bottom",
+  "textures": {
+    "front": "worldradio:block/amplifier_front_0",
+    "side": "worldradio:block/amplifier_side",
+    "top": "worldradio:block/amplifier_top",
+    "bottom": "worldradio:block/amplifier_bottom"
+  }
+}

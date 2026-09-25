@@ -1,0 +1,10 @@
+forceload add -32 -32 96 32
+time set noon
+weather clear
+fill -10 -60 -4 130 -50 8 air
+setblock 0 -60 0 worldradio:radio[facing=south]
+worldradio tune 0 -60 0 "http://stream.kissfm.de/kissfm/mp3-128/internetradio/" Kiss FM
+setblock 40 -60 0 worldradio:radio[facing=south]
+worldradio tune 40 -60 0 "http://stream2.early1900s.org:8000/" Radio Dismuke
+setblock 20 -60 0 worldradio:amplifier[facing=south]
+fill 20 -59 0 20 -57 0 iron_bars

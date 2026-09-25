@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "top": "worldradio:block/amplifier_top",
+    "front": "worldradio:block/amplifier_front_3",
+    "side": "worldradio:block/amplifier_side"
+  }
+}

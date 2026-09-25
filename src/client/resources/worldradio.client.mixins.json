@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "worldradio.client.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "SoundBufferLibraryMixin",
+    "SoundSourceMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "C": "minecraft:copper_ingot",
+    "W": "worldradio:radio",
+    "R": "minecraft:redstone"
+  },
+  "pattern": [
+    "ICI",
+    "CWC",
+    "IRI"
+  ],
+  "result": {
+    "id": "worldradio:amplifier"
+  }
+}

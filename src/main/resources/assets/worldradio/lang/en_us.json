@@ -1,0 +1,59 @@
+{
+  "block.worldradio.radio": "Radio",
+  "block.worldradio.amplifier": "Radio Amplifier",
+  "soundCategory.radio": "Radio",
+  "itemGroup.worldradio": "World Radio",
+
+  "worldradio.range": "Range %s blocks (%s antenna blocks)",
+  "worldradio.range.one": "Range %s blocks (1 antenna block)",
+  "worldradio.range.none": "Range %s blocks (no antenna)",
+  "worldradio.range.hint": "Stack end rods, bars, chains or lightning rods on top to extend the range (+%s blocks each).",
+
+  "worldradio.tab.favourites": "Favorites",
+  "worldradio.tab.browse": "Browse",
+  "worldradio.tab.url": "URL",
+  "worldradio.tab.search": "Search",
+  "worldradio.search.hint": "Station name or genre…",
+  "worldradio.search.hint.empty": "Type a station name or a genre, e.g. jazz",
+
+  "worldradio.station.none": "No station",
+  "worldradio.station.clear": "Clear",
+  "worldradio.station.clear.tooltip": "Clear the station: the radio stays silent until you tune it again",
+  "worldradio.station.off": "Turn off",
+  "worldradio.station.on": "Turn on",
+  "worldradio.toggle.on": "Radio on",
+  "worldradio.toggle.off": "Radio off",
+  "worldradio.status.tune": "Pick a station below",
+  "worldradio.status.disabled": "Off – press Turn on or sneak + right-click the radio",
+  "worldradio.status.idle": "Not playing here (too far away?)",
+  "worldradio.status.connecting": "Connecting…",
+  "worldradio.status.playing": "Playing",
+  "worldradio.status.retrying": "No connection (%s), retrying…",
+  "worldradio.status.unsupported": "Cannot play this stream: %s",
+
+  "worldradio.favorite.add": "Add to your favorites",
+  "worldradio.favorite.remove": "Remove from your favorites",
+  "worldradio.favorite.rename": "Rename (Enter keeps the new name, Esc drops it)",
+  "worldradio.favorites.empty": "No favorites yet. Tune a station and press the star to keep it here; your list is the same in every world.",
+
+  "worldradio.browse.back": "Back",
+  "worldradio.browse.filter": "Filter…",
+  "worldradio.browse.countries": "Countries",
+  "worldradio.browse.all_regions": "All regions",
+  "worldradio.browse.loading": "Loading from radio-browser.info…",
+  "worldradio.browse.error": "Could not load the list: %s",
+  "worldradio.browse.nothing": "Nothing found.",
+  "worldradio.browse.mp3_only": "Lists MP3 stations only",
+
+  "worldradio.url.label": "Stream address (MP3, .m3u or .pls)",
+  "worldradio.url.play": "Play",
+  "worldradio.url.invalid": "That is not an http(s) address.",
+  "worldradio.url.hint": "Any internet radio that streams MP3 works, e.g. http://stream.kissfm.de/kissfm/mp3-128/internetradio/. AAC, Ogg and HLS streams are not supported.",
+
+  "worldradio.volume": "Volume: %s%%",
+  "worldradio.volume.tooltip": "Volume of this radio for everyone who hears it. Your own radio volume: Options → Music & Sounds → Radio",
+
+  "worldradio.amplifier.count": "%s signals",
+  "worldradio.amplifier.none": "No radio signal reaches this amplifier.",
+  "worldradio.amplifier.row": "%s, %s, %s · %s m · hops: %s · %s %%"
+}

@@ -1,0 +1,9 @@
+forceload add -32 -32 32 32
+time set noon
+weather clear
+fill -8 -60 -6 8 -50 8 air
+fill -8 -61 -6 8 -61 8 grass_block
+setblock -1 -60 0 worldradio:radio[facing=south]
+setblock 1 -60 0 worldradio:amplifier[facing=south]
+setblock -1 -60 3 worldradio:radio[facing=west]
+setblock 1 -60 3 worldradio:amplifier[facing=west]
