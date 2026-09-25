@@ -13,6 +13,7 @@
 #        ENTER=1 (press Enter at tick 85)   VOLUME=0.4 (move the volume slider at tick 80)
 #        HOVER=1 (put the mouse on the screen's range line from tick 100, so its tooltip is in the shot)
 #        HOLD=item_id (the server puts that item into the player's main hand on join, e.g. minecraft:stick)
+#        OFFHAND=item_id (same for the offhand, e.g. minecraft:shield – the sneak switch must still work)
 # The command files hold one server command per line (without leading slash).
 set -u
 cd "$(dirname "$0")/.."
@@ -43,6 +44,7 @@ EXTRA=()
 [ -n "${HOVER:-}" ] && EXTRA+=(-PdevHover=1)
 SERVER_EXTRA=()
 [ -n "${HOLD:-}" ] && SERVER_EXTRA+=(-PdevHold="$HOLD")
+[ -n "${OFFHAND:-}" ] && SERVER_EXTRA+=(-PdevOffhand="$OFFHAND")
 rcon() { "$JAVA_HOME/bin/java" tools/Rcon.java 127.0.0.1 25599 wr "$@"; }
 
 mkdir -p run/screenshots

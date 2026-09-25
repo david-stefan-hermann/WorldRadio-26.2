@@ -13,7 +13,8 @@ import java.util.Set;
 /**
  * Development helper, only active with -Dworldradio.dev.view=x,y,z,yaw,pitch (set by `-PdevScreenshot`): one second
  * after a player joins, the server teleports them to that view point so the client can take its screenshots. With
- * -Dworldradio.dev.hold=item_id the player also gets that item into the main hand (right-click tests with an item).
+ * -Dworldradio.dev.hold=item_id the player also gets that item into the main hand (right-click tests with an item),
+ * -Dworldradio.dev.offhand=item_id one into the offhand (the sneak switch must work with an occupied offhand).
  */
 public final class DevHooks {
     public static final String VIEW_PROPERTY = "worldradio.dev.view";
@@ -26,6 +27,7 @@ public final class DevHooks {
         if (view == null) return;
         WorldRadio.LOGGER.info("Dev view point active: {}", System.getProperty(VIEW_PROPERTY));
         String hold = System.getProperty("worldradio.dev.hold");
+        String offhand = System.getProperty("worldradio.dev.offhand");
         java.util.Map<ServerPlayer, Integer> seen = new java.util.WeakHashMap<>();
         ServerTickEvents.END_SERVER_TICK.register(server -> {
             for (ServerPlayer player : server.getPlayerList().getPlayers()) {
@@ -39,6 +41,12 @@ public final class DevHooks {
                             new ItemStack(BuiltInRegistries.ITEM.getValue(Identifier.parse(hold))));
                     WorldRadio.LOGGER.info("Dev view: {} holds {}", player.getName().getString(),
                             player.getMainHandItem());
+                }
+                if (offhand != null) {
+                    player.setItemInHand(InteractionHand.OFF_HAND,
+                            new ItemStack(BuiltInRegistries.ITEM.getValue(Identifier.parse(offhand))));
+                    WorldRadio.LOGGER.info("Dev view: {} holds {} in the offhand", player.getName().getString(),
+                            player.getOffhandItem());
                 }
             }
         });

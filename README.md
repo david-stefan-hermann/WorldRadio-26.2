@@ -21,11 +21,11 @@ which station a radio plays, every player's game fetches the stream itself.
 | Action | Radio | Amplifier |
 |---|---|---|
 | Right-click (with or without an item) | opens the station screen | lists the signals it receives |
-| Sneak + right-click (empty hand) | switches it on or off, the station stays | – |
+| Sneak + right-click (empty main hand) | switches it on or off, the station stays | – |
 | Antenna blocks stacked on top | +32 blocks of range each | same |
 
-Minecraft ignores sneak + right-click on a block while you hold an item, so the switch works with an empty hand
-only; the station screen has a *Turn off* / *Turn on* button as well. An antenna block clicked onto the top face (the
+The switch works with an empty main hand (the offhand may hold anything); with an item in the main hand, sneaking
+places or uses that item as usual. The station screen has a *Turn off* / *Turn on* button as well. An antenna block clicked onto the top face (the
 socket) is placed there; to place anything else against a radio or amplifier, sneak. `E` (the inventory key) closes
 the screens, unless you are typing into a text box.
 

@@ -8,13 +8,18 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerBlockEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
@@ -90,6 +95,20 @@ public class WorldRadio implements ModInitializer {
         ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) ->
                 RadioNetwork.get((net.minecraft.server.level.ServerLevel) newPlayer.level()).sendTo(newPlayer));
         CommandRegistrationCallback.EVENT.register((dispatcher, registries, selection) -> RadioCommand.register(dispatcher));
+        // Sneak + right-click on a radio switches it on or off. Vanilla skips block interaction while sneaking as soon
+        // as either hand holds something (a shield or totem in the offhand was enough to break the switch on servers),
+        // so the switch is taken here, before that gate; the main hand must be empty so held blocks still get placed.
+        UseBlockCallback.EVENT.register((player, level, hand, hit) -> {
+            if (hand != InteractionHand.MAIN_HAND || !player.isSecondaryUseActive() || !player.getMainHandItem().isEmpty()) {
+                return InteractionResult.PASS;
+            }
+            BlockPos pos = hit.getBlockPos();
+            if (!(level.getBlockState(pos).getBlock() instanceof RadioBlock)) return InteractionResult.PASS;
+            if (level instanceof ServerLevel serverLevel && level.getBlockEntity(pos) instanceof RadioBlockEntity radio) {
+                RadioBlock.toggle(serverLevel, pos, radio, player);
+            }
+            return InteractionResult.SUCCESS;
+        });
         DevHooks.initServer();
         LOGGER.info("World Radio ready (range {} + {} per antenna block, up to {} blocks)", Config.get().baseRange(),
                 Config.get().antennaStep(), Config.get().maxAntenna());

@@ -1,0 +1,6 @@
+forceload add -32 -32 32 32
+time set noon
+weather clear
+fill -10 -60 -4 130 -50 8 air
+setblock 0 -60 0 worldradio:radio[facing=south]
+worldradio tune 0 -60 0 "http://stream2.early1900s.org:8000/" Radio Dismuke

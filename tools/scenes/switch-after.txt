@@ -1,0 +1,2 @@
+sleep:6000
+worldradio status 0 -60 0

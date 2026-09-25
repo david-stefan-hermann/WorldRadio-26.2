@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.0.1
+- Fixed sneak + right-click not switching the radio on or off while the offhand holds something (a shield or totem, for example): Minecraft skips block interaction while sneaking as soon as either hand is occupied, so the switch is now taken before that check. It needs an empty main hand only.
+
 ## 1.0.0
 First release for Minecraft 26.2 (Fabric).
 - **Radio** block: plays an MP3 internet stream to everyone nearby. Pick a station from the Radio-Browser catalogue (country → region, or search by name and genre), or paste any stream address (`.m3u`/`.pls` playlists work too).
