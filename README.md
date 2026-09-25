@@ -11,7 +11,7 @@ with you into every world. Both blocks are in their own creative tab, *World Rad
 
 ## Download
 
-Get `worldradio-<version>.jar` from [Modrinth](https://modrinth.com/mod/world-radio), CurseForge or the
+Get `worldradio-<version>.jar` from [Modrinth](https://modrinth.com/mod/world-radio), [CurseForge](https://www.curseforge.com/projects/1711984) or the
 [GitHub releases](../../releases) and put it into `mods/` on the client and the server, next to Fabric API.
 Requires Minecraft 26.2, Fabric Loader 0.19.3+ and Java 25. The server never streams anything: it only stores
 which station a radio plays, every player's game fetches the stream itself.
