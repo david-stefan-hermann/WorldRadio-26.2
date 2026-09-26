@@ -8,7 +8,6 @@ import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import org.lwjgl.glfw.GLFW;
 import worldradio.block.RadioBlockEntity;
 import worldradio.client.FavouritesCache;
 import worldradio.client.api.RadioBrowser;
@@ -556,11 +555,11 @@ public class RadioScreen extends net.minecraft.client.gui.screens.Screen {
     @Override
     public boolean keyPressed(KeyEvent event) {
         if (renameBox != null && getFocused() == renameBox) {
-            if (event.key() == GLFW.GLFW_KEY_ENTER || event.key() == GLFW.GLFW_KEY_KP_ENTER) {
+            if (event.isConfirmation()) {
                 commitRename();
                 return true;
             }
-            if (event.key() == GLFW.GLFW_KEY_ESCAPE) {
+            if (event.isEscape()) {
                 closeRename();
                 return true;
             }

@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.0
+- Minecraft 26.3 (Fabric Loader 0.19.5, Fabric API 0.161.0). Same features as 1.0.1; the 26.2 build stays at 1.0.1 (branch `26.2`).
+- Adapted to 26.3: block codecs are gone, sound instances resolve through `getOrResolve`, key events use scancodes, recipe-unlock advancements use the `recipes` key.
+
 ## 1.0.1
 - Fixed sneak + right-click not switching the radio on or off while the offhand holds something (a shield or totem, for example): Minecraft skips block interaction while sneaking as soon as either hand is occupied, so the switch is now taken before that check. It needs an empty main hand only.
 

@@ -114,11 +114,13 @@ public final class RadioSoundInstance extends AbstractTickableSoundInstance {
         return true;
     }
 
+    /** No sounds.json entry: the instance is its own streamed {@link Sound}, named after this instance's id. */
     @Override
-    public WeighedSoundEvents resolve(SoundManager soundManager) {
+    public WeighedSoundEvents getOrResolve(SoundManager soundManager) {
         sound = new Sound(Identifier.fromNamespaceAndPath(WorldRadio.MOD_ID, "radio/" + id), ConstantFloat.of(1.0f),
                 ConstantFloat.of(1.0f), 1, Sound.Type.FILE, true, false, 16);
-        return new WeighedSoundEvents(getIdentifier(), null);
+        soundEvent = new WeighedSoundEvents(getIdentifier(), null);
+        return soundEvent;
     }
 
     /** Called by the mixin for every streamed sound path; null when it is not one of ours. */

@@ -1,6 +1,5 @@
 package worldradio.block;
 
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -19,15 +18,8 @@ import worldradio.server.RadioNetwork;
  * right-click switches it on or off (the station stays); vanilla only lets that through with an empty hand.
  */
 public class RadioBlock extends SignalBlock {
-    public static final MapCodec<RadioBlock> CODEC = simpleCodec(RadioBlock::new);
-
     public RadioBlock(Properties properties) {
         super(properties);
-    }
-
-    @Override
-    protected MapCodec<RadioBlock> codec() {
-        return CODEC;
     }
 
     @Override

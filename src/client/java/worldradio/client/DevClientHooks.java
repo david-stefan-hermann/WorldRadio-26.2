@@ -85,7 +85,8 @@ public final class DevClientHooks {
         String rename = System.getProperty("worldradio.dev.rename");
         if (rename != null && ticks == 75) radio.devStartRename(Integer.parseInt(rename));
         if (System.getProperty("worldradio.dev.enter") != null && ticks == 85) {
-            radio.keyPressed(new net.minecraft.client.input.KeyEvent(org.lwjgl.glfw.GLFW.GLFW_KEY_ENTER, 0, 0));
+            int enter = com.mojang.blaze3d.platform.InputConstants.KEY_RETURN;
+            radio.keyPressed(new net.minecraft.client.input.KeyEvent(enter, enter, 0));
             WorldRadio.LOGGER.info("Dev: pressed Enter, favorites now {}", FavouritesCache.list());
         }
         String volume = System.getProperty("worldradio.dev.volume");
@@ -148,8 +149,10 @@ public final class DevClientHooks {
         String keys = text != null ? text : key;
         for (char c : keys.toCharArray()) {
             if (minecraft.gui.screen() != screen) break;
-            int code = Character.isLetter(c) ? Character.toUpperCase(c) : Character.isDigit(c) || c == '/' || c == '.' ? c : -1;
-            if (!screen.keyPressed(new net.minecraft.client.input.KeyEvent(code, 0, 0)) && minecraft.gui.screen() == screen) {
+            // 26.3 key codes are scancodes, so look them up by their key.keyboard.* name like options.txt does.
+            String name = Character.isLetterOrDigit(c) ? String.valueOf(Character.toLowerCase(c)) : c == '/' ? "slash" : c == '.' ? "period" : null;
+            int code = name == null ? -1 : com.mojang.blaze3d.platform.InputConstants.getKey("key.keyboard." + name).getValue();
+            if (!screen.keyPressed(new net.minecraft.client.input.KeyEvent(code, code, 0)) && minecraft.gui.screen() == screen) {
                 screen.charTyped(new net.minecraft.client.input.CharacterEvent(c));
             }
         }

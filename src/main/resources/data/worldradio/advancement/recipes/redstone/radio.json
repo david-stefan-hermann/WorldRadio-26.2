@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "worldradio:radio"
+        "recipes": "worldradio:radio"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
