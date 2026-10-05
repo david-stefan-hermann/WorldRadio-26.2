@@ -18,7 +18,7 @@ public class ReceiverBlock extends RadioBlock {
     }
 
     @Override
-    protected MapCodec<ReceiverBlock> codec() {
+    protected MapCodec<? extends ReceiverBlock> codec() {
         return CODEC;
     }
 

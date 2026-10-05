@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "worldradio:item/portable_radio"
+    "model": "worldradio:block/portable_radio_on"
   }
 }

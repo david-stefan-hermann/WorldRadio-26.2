@@ -195,7 +195,7 @@ public class MakeBook extends MakeGuiTextures {
         int left = 10 + TAB_W - 3, top = 10;
         put(g, panel, left, top);
         BufferedImage[] blocks = {face("radio_front_3"), face("channel_front_3"), face("amplifier_front_3"),
-                face("receiver_front_3"), face("speaker_front_on"), ImageIO.read(TEXTURES.resolve("item/portable_radio.png").toFile())};
+                face("receiver_front_3"), face("speaker_front_on"), face("portable_radio_on")};
         BufferedImage[] topics = {item, rod(), readJar("assets/minecraft/textures/item/spyglass.png"),
                 readJar("assets/minecraft/textures/block/note_block.png")};
         for (int i = 0; i < blocks.length; i++) tab(g, keys[0], blocks[i], left - TAB_W + 3, top + 8 + i * (TAB_H + TAB_GAP));

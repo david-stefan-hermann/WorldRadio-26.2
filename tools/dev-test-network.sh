@@ -41,7 +41,7 @@ stop() {
 start
 
 check "old config loads, step 8 migrated to 32" "$(grep 'World Radio ready' run/runServer.out)" "range 32 \+ 32 per antenna block, up to 32 blocks"
-check "config written back with version, without ranges" "$(tr -d '\n ' < run/config/worldradio.json)" '^\{"configVersion":5,"baseRange":32,"antennaStep":32,"maxAntenna":32,"hearingBase":4,"speakerStep":4,"hearingMax":64,"maxStations":6,"directionalShare":0.3\}$'
+check "config written back with version, without ranges" "$(tr -d '\n ' < run/config/worldradio.json)" '^\{"configVersion":5,"baseRange":32,"antennaStep":32,"maxAntenna":32,"hearingBase":4,"speakerStep":4,"portableHearing":10,"hearingMax":64,"maxStations":6,"directionalShare":0.3\}$'
 check "recipes and advancements parse" "$(grep -iE "couldn't parse|failed to parse|couldn't load|error.*worldradio" run/runServer.out | head -3)" '^$'
 
 # whatever the last run left (an older world still has power=... blocks there): information only

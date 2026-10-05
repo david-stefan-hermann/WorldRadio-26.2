@@ -2,6 +2,7 @@
 
 ## 2.1.0
 - New **World Radio Guide**: a guide book with a chapter for every block (what it does, its recipe, how to use it) and for range and antennas, finding stations and listening, with build pictures. English and German.
+- The **Portable Radio** is a small 3D transistor radio now, in the inventory and in the hand too, and it can be **put down**: sneak + right-click on a block. There it plays to everyone within 10 blocks like a Radio (same tuner, speakers add to it; new config entry `portableHearing`) and while it plays its lights are green and its antenna is pulled out; a bare hand breaks it at once to take it along again. Station, volume and on/off travel with it both ways. Sneak + right-click into the air still switches it.
 - Every player gets one guide the first time they join. A new one is crafted from a book and a copper ingot; it is also the first item of the creative tab.
 
 ## 2.0.0

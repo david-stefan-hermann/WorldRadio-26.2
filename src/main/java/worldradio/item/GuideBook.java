@@ -132,7 +132,8 @@ public final class GuideBook {
                 new Chapter("item.worldradio.portable_radio", new ItemStack(WorldRadio.PORTABLE_RADIO_ITEM), true, List.of(
                         new Text(key("portable.text")), new Announcement(key("portable.motto")),
                         crafting, recipe("portable_radio"),
-                        turn, use, new Text(key("portable.use")))),
+                        turn, use, new Text(key("portable.use")),
+                        new Heading(key("heading.place")), new Text(key("portable.place"), config.portableHearing()))),
                 new Chapter(key("range"), vanilla("lightning_rod"), false, List.of(
                         new Text(key("range.text"), config.baseRange(), config.antennaStep(), config.maxAntenna(),
                                 Config.range(config.maxAntenna())),

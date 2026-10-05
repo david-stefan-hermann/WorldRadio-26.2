@@ -5,6 +5,7 @@
   "block.worldradio.receiver": "Radio",
   "block.worldradio.speaker": "Speaker",
   "item.worldradio.portable_radio": "Portable Radio",
+  "block.worldradio.portable_radio": "Portable Radio",
   "soundCategory.radio": "Radio",
   "itemGroup.worldradio": "World Radio",
 
@@ -113,7 +114,9 @@
 
   "worldradio.book.portable.text": "A radio to carry. It plays to you alone while it is anywhere in your inventory, as long as the signal of its station reaches you.",
   "worldradio.book.portable.motto": "\"Music wherever you go.\"",
-  "worldradio.book.portable.use": "Right-click: the tuner, with stations and volume. Sneak + right-click: on or off. Of several in the inventory, the first one that is switched on plays.",
+  "worldradio.book.portable.use": "Right-click: the tuner, with stations and volume. Sneak + right-click into the air: on or off. Of several in the inventory, the first one that is switched on plays.",
+  "worldradio.book.heading.place": "Putting it down",
+  "worldradio.book.portable.place": "Sneak + right-click on a block puts it down. There it plays to everyone within %s blocks like a Radio, further with Speakers. A bare hand breaks it at once to take it along again: it keeps its station.",
 
   "worldradio.book.range": "Range & Antennas",
   "worldradio.book.range.text": "A transmitter reaches %1$s blocks. Every antenna block stacked straight on top of it adds %2$s more, up to %3$s antenna blocks (%4$s blocks).",

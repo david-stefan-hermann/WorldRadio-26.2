@@ -5,7 +5,8 @@
 Internet radio for Minecraft 26.2 (Fabric) that works like real radio. A **Radio Transmitter** sends an MP3 internet
 stream as a signal, **Radio Channels** next to it add more stations to the same antenna, **Radio Amplifiers** carry
 the signals further, and you listen where a signal arrives: with a **Radio** block that plays to everyone around it
-(further with **Speakers**), or with a **Portable Radio** in your inventory that only you hear. Where several signals
+(further with **Speakers**), or with a **Portable Radio** in your inventory that only you hear (put it down and
+everyone around hears it). Where several signals
 arrive, every radio picks its own station. Pick the transmitter's station from the free
 [Radio-Browser](https://www.radio-browser.info) catalogue, search by name or genre, paste any stream address, and keep
 your own list of favorites that comes with you into every world. Everything is in its own creative tab, *World Radio*.
@@ -35,9 +36,9 @@ Right-click opens it. Lost it? Craft a new one from a book and a copper ingot, o
 | Action | Radio Transmitter | Radio Channel | Radio Amplifier | Radio | Portable Radio |
 |---|---|---|---|---|---|
 | Right-click | opens the station screen | opens the station screen | lists the signals it receives | opens the tuner | opens the tuner |
-| Sneak + right-click | switches it on or off, the station stays | same | – | switches it on or off | switches it on or off |
+| Sneak + right-click | switches it on or off, the station stays | same | – | switches it on or off | into the air: switches it on or off; on a block: puts it down |
 | Antenna blocks stacked on top | +32 blocks of signal range each | – (uses its transmitter's) | +32 each | – | – |
-| Makes sound | no | no | no | for everyone in its hearing range | for you, anywhere in your inventory |
+| Makes sound | no | no | no | for everyone in its hearing range | for you, anywhere in your inventory; put down: like a Radio |
 
 The **Speaker** has no screen: placed against a Radio (or against a speaker that is already connected) it makes that
 radio heard 4 blocks further.
@@ -69,7 +70,10 @@ sneak. `E` (the inventory key) closes the screens, unless you are typing into a 
 - **Portable Radio** (item): its tuner lists the stations that arrive where you stand. It plays while it is anywhere
   in your inventory, only for you, at full volume inside the signal range; past the range it fades out over the next
   10 blocks (a quarter of the range above 40). The first portable radio in the inventory that is switched on and
-  tuned plays. The item's tooltip shows its station.
+  tuned plays. The item's tooltip shows its station. Sneak + right-click on a block **puts it down**: there it is a
+  small radio that plays to everyone within 10 blocks, with the same tuner as the Radio block; speakers add 4 blocks
+  each to it as well. A bare hand breaks it at once to take it along again; station, volume and on/off travel with it
+  both ways.
 - **The front shows the state**: no station, switched off or no signal = still, red light; otherwise the transmitter's
   mast sends waves (the radio's speaker: rings), the meter moves and the bars light up (transmitter and amplifier:
   one bar for the base range, two for one to three antenna blocks, three for four or more). A channel has a wide
@@ -89,6 +93,8 @@ sneak. `E` (the inventory key) closes the screens, unless you are typing into a 
 | Radio | Portable Radio |
 |---|---|
 | ![The tuner of a Radio block](docs/tuner.png) | ![The tuner of a Portable Radio](docs/portable.png) |
+
+![Portable Radios put down: one playing with its antenna pulled out, three silent ones from the front, the side and the back](docs/portable-block.png)
 
 Click a station to play it; the key under the list switches the radio on or off, the slider is its volume.
 
@@ -201,6 +207,7 @@ World Radio Guide (shapeless, in the Misc tab): a book and a copper ingot.
   "antennaStep": 32,
   "maxAntenna": 32,
   "hearingBase": 4,
+  "portableHearing": 10,
   "speakerStep": 4,
   "hearingMax": 64,
   "maxStations": 6,
@@ -209,7 +216,8 @@ World Radio Guide (shapeless, in the Misc tab): a book and a copper ingot.
 ```
 
 `baseRange`, `antennaStep` and `maxAntenna` (signal range) and `hearingBase`, `speakerStep` and `hearingMax` (how far
-a Radio block is heard: without speakers, more per speaker, and at most) are read by the server. Older files are
+a Radio block is heard: without speakers, more per speaker, and at most) and `portableHearing` (a Portable Radio that
+is put down, without speakers) are read by the server. Older files are
 carried over: the new entries are added, a
 `ranges` list from 0.1/0.2 is dropped, and a 0.3 file (no `configVersion`) with the old default step of 8 is moved to
 32. `maxStations` (at most 8, which is what the sound engine allows) and `directionalShare` (0 = all at the player,

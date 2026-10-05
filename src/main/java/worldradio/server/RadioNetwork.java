@@ -199,7 +199,8 @@ public final class RadioNetwork {
                     case RECEIVER -> {
                         Set<BlockPos> chain = speakers(pos);
                         chains.put(pos, chain);
-                        ((ReceiverBlockEntity) be).setRange(Config.hearing(chain.size()), chain.size());
+                        ReceiverBlockEntity radio = (ReceiverBlockEntity) be;
+                        radio.setRange(radio.hearing(chain.size()), chain.size());
                         yield nodeOf(be, 0, 0);
                     }
                     case CHANNEL -> now;
@@ -211,7 +212,7 @@ public final class RadioNetwork {
                 entities.put(pos, be);
             } else {
                 int range = switch (known.kind()) {
-                    case RECEIVER -> Config.hearing(known.antenna());
+                    case RECEIVER -> known.range(); // radio or portable radio: as worked out while it was loaded
                     case CHANNEL -> 0;
                     case TRANSMITTER, AMPLIFIER -> Config.range(known.antenna());
                 };

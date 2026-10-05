@@ -5,6 +5,7 @@
   "block.worldradio.receiver": "Radio",
   "block.worldradio.speaker": "Lautsprecher",
   "item.worldradio.portable_radio": "Kofferradio",
+  "block.worldradio.portable_radio": "Kofferradio",
   "soundCategory.radio": "Radio",
   "itemGroup.worldradio": "World Radio",
 
@@ -113,7 +114,9 @@
 
   "worldradio.book.portable.text": "Ein Radio zum Mitnehmen. Es spielt nur für dich, solange es irgendwo in deinem Inventar liegt und das Signal seines Senders dich erreicht.",
   "worldradio.book.portable.motto": "„Musik, wohin du auch gehst.“",
-  "worldradio.book.portable.use": "Rechtsklick: der Tuner mit Sendern und Lautstärke. Schleichen + Rechtsklick: ein oder aus. Liegen mehrere im Inventar, spielt das erste, das eingeschaltet ist.",
+  "worldradio.book.portable.use": "Rechtsklick: der Tuner mit Sendern und Lautstärke. Schleichen + Rechtsklick in die Luft: ein oder aus. Liegen mehrere im Inventar, spielt das erste, das eingeschaltet ist.",
+  "worldradio.book.heading.place": "Hinstellen",
+  "worldradio.book.portable.place": "Schleichen + Rechtsklick auf einen Block stellt es hin. Dort spielt es wie ein Radio für alle im Umkreis von %s Blöcken, mit Lautsprechern weiter. Mit bloßer Hand ist es sofort abgebaut und wieder dabei: Der Sender bleibt eingestellt.",
 
   "worldradio.book.range": "Reichweite & Antennen",
   "worldradio.book.range.text": "Ein Radiosender reicht %1$s Blöcke weit. Jeder Antennenblock, der gerade darauf gestapelt ist, bringt %2$s mehr, bis zu %3$s Antennenblöcken (%4$s Blöcke).",

@@ -36,6 +36,7 @@ import worldradio.block.AmplifierBlock;
 import worldradio.block.AmplifierBlockEntity;
 import worldradio.block.ChannelBlock;
 import worldradio.block.ChannelBlockEntity;
+import worldradio.block.PortableRadioBlock;
 import worldradio.block.RadioBlock;
 import worldradio.block.SpeakerBlock;
 import worldradio.block.RadioBlockEntity;
@@ -73,6 +74,10 @@ public class WorldRadio implements ModInitializer {
     public static final Block SPEAKER = registerBlock("speaker", props -> new SpeakerBlock(props
             .strength(1.5f).sound(SoundType.WOOD)));
 
+    /** The portable radio put down: a small radio that keeps the item's setting. */
+    public static final Block PORTABLE_RADIO = registerBlock("portable_radio", props -> new PortableRadioBlock(props
+            .instabreak().sound(SoundType.WOOD).noOcclusion()));
+
     public static final BlockEntityType<RadioBlockEntity> RADIO_BLOCK_ENTITY = Registry.register(
             BuiltInRegistries.BLOCK_ENTITY_TYPE, id("radio"),
             FabricBlockEntityTypeBuilder.create(RadioBlockEntity::new, RADIO).build());
@@ -84,7 +89,7 @@ public class WorldRadio implements ModInitializer {
             FabricBlockEntityTypeBuilder.create(ChannelBlockEntity::new, CHANNEL).build());
     public static final BlockEntityType<ReceiverBlockEntity> RECEIVER_BLOCK_ENTITY = Registry.register(
             BuiltInRegistries.BLOCK_ENTITY_TYPE, id("receiver"),
-            FabricBlockEntityTypeBuilder.create(ReceiverBlockEntity::new, RECEIVER).build());
+            FabricBlockEntityTypeBuilder.create(ReceiverBlockEntity::new, RECEIVER, PORTABLE_RADIO).build());
 
     /** The setting of a portable radio; changing it must not replay the hand's equip animation (volume slider). */
     public static final DataComponentType<Tuning> TUNING = Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE,
@@ -96,7 +101,7 @@ public class WorldRadio implements ModInitializer {
     public static final Item CHANNEL_ITEM = registerItem("channel", props -> new BlockItem(CHANNEL, props.useBlockDescriptionPrefix()));
     public static final Item RECEIVER_ITEM = registerItem("receiver", props -> new BlockItem(RECEIVER, props.useBlockDescriptionPrefix()));
     public static final Item SPEAKER_ITEM = registerItem("speaker", props -> new BlockItem(SPEAKER, props.useBlockDescriptionPrefix()));
-    public static final Item PORTABLE_RADIO_ITEM = registerItem("portable_radio", props -> new PortableRadioItem(props.stacksTo(1)));
+    public static final Item PORTABLE_RADIO_ITEM = registerItem("portable_radio", props -> new PortableRadioItem(PORTABLE_RADIO, props.stacksTo(1)));
     public static final Item GUIDE_BOOK_ITEM = registerItem("guide_book", props -> new GuideBookItem(props.stacksTo(1)));
 
     /** The mod's own creative tab; the items are not listed anywhere else. */

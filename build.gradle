@@ -30,6 +30,17 @@ dependencies {
     include "javazoom:jlayer:1.0.1"
 }
 
+// `./gradlew runServer -PdevPortable`: the server's own test of putting a portable radio down (worldradio.DevHooks).
+if (project.hasProperty('devPortable')) {
+    loom {
+        runs {
+            server {
+                vmArg "-Dworldradio.dev.portable=1"
+            }
+        }
+    }
+}
+
 // `./gradlew runServer -PdevScreenshot` + `./gradlew runClient -PdevScreenshot`: the client joins the dev server on
 // localhost:25598, the server teleports the joining player to the view point, the client saves a screenshot and
 // quits (see worldradio.DevHooks and worldradio.client.DevClientHooks).

@@ -36,6 +36,8 @@ public final class Config {
         int hearingBase = 4;
         /** Blocks of hearing range each speaker connected to a radio adds. */
         int speakerStep = 4;
+        /** How far a portable radio that is put down can be heard without speakers, in blocks. */
+        int portableHearing = 10;
         /** The most speakers can raise a radio's hearing range to. */
         int hearingMax = 64;
         /** How many stations one client plays at the same time (vanilla has 8 streaming channels). */
@@ -57,6 +59,10 @@ public final class Config {
 
         public int hearingBase() {
             return Math.max(1, hearingBase);
+        }
+
+        public int portableHearing() {
+            return Math.max(1, portableHearing);
         }
 
         public int speakerStep() {
@@ -91,6 +97,12 @@ public final class Config {
     /** A radio's hearing range in blocks with {@code speakers} speakers connected to it. */
     public static int hearing(int speakers) {
         return (int) Math.min(values.hearingMax(), values.hearingBase() + (long) Math.max(speakers, 0) * values.speakerStep());
+    }
+
+    /** The same for a portable radio that is put down: it starts further out, speakers add as much. */
+    public static int portableHearing(int speakers) {
+        int base = values.portableHearing();
+        return (int) Math.min(Math.max(values.hearingMax(), base), base + (long) Math.max(speakers, 0) * values.speakerStep());
     }
 
     /** Speakers past this many add nothing to a radio. */
