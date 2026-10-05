@@ -3,7 +3,7 @@
   "id": "worldradio",
   "version": "${version}",
   "name": "World Radio",
-  "description": "Internet radio in the world: radio blocks play MP3 streams (Radio-Browser catalogue or any URL) to everyone nearby, amplifiers carry the signal further. Your own favorites in every world, a volume slider per radio.",
+  "description": "Internet radio that works like real radio: transmitters send MP3 streams (Radio-Browser catalogue or any URL) as a signal, amplifiers carry it further, and radio blocks or the portable radio in your inventory play the station you pick. Your own favorites in every world.",
   "authors": [
     "BaconCakeFactory"
   ],

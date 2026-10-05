@@ -4,7 +4,9 @@
 # commands, waits for the client to quit, then stops the server.
 #
 # Usage: tools/dev-screenshot.sh <shot> "<x,y,z,yaw,pitch>" <setup-file> [after-join-file]
-# Env:   SCREEN=radio|browse|url|search|amplifier,x,y,z, creative or sounds   SEARCH=text (Search tab)   TICKS=<client ticks>   WALK=dx,dz (blocks per second)
+# Env:   SCREEN=radio|browse|url|search|amplifier|tuner,x,y,z, portable (tuner of the held portable radio), creative or sounds
+#        SEARCH=text (Search tab)   TICKS=<client ticks>   WALK=dx,dz (blocks per second)
+#        USEITEM=plain|sneak (right-click into the air with the held item at tick 80)
 #        STAR=1 (press the favourite star at tick 80)   POWER=1 (press Turn off/Turn on at tick 80)   COUNTRY=DE (browse: open that country, all regions)
 #        TYPE=text (clear the focused text box, type text at tick 80)   KEY=e (press that key at tick 80)
 #        USE=x,y,z,plain|sneak,count[,face] (right-click the block count times from tick 80, on that face, default south)
@@ -41,6 +43,7 @@ EXTRA=()
 [ -n "${ORBIT:-}" ] && EXTRA+=(-PdevOrbit="$ORBIT")
 [ -n "${SEARCH:-}" ] && EXTRA+=(-PdevSearch="$SEARCH")
 [ -n "${USE:-}" ] && EXTRA+=(-PdevUse="$USE")
+[ -n "${USEITEM:-}" ] && EXTRA+=(-PdevUseItem="$USEITEM")
 [ -n "${HOVER:-}" ] && EXTRA+=(-PdevHover=1)
 SERVER_EXTRA=()
 [ -n "${HOLD:-}" ] && SERVER_EXTRA+=(-PdevHold="$HOLD")

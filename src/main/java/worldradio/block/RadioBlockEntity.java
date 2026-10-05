@@ -8,15 +8,17 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import worldradio.WorldRadio;
 
 /**
- * The station a radio plays (stream address, display name, country code), whether it is switched on, its range in
- * blocks, the antenna blocks on top of it and its volume (0..1, for everyone who hears it). Switching off keeps the
- * station. The server works out both numbers from the antenna column and its config, so clients need no config.
+ * The station a transmitter sends (stream address, display name, country code), whether it is switched on, its signal
+ * range in blocks and the antenna blocks on top of it. Switching off keeps the station. The server works out both
+ * numbers from the antenna column and its config, so clients need no config. The transmitter itself makes no sound;
+ * {@code volume} (0..1, for everyone who hears it) only counts for the receiving {@link ReceiverBlockEntity}.
  */
 public class RadioBlockEntity extends BlockEntity {
     private String url = "";
@@ -28,7 +30,11 @@ public class RadioBlockEntity extends BlockEntity {
     private float volume = 1.0f;
 
     public RadioBlockEntity(BlockPos pos, BlockState state) {
-        super(WorldRadio.RADIO_BLOCK_ENTITY, pos, state);
+        this(WorldRadio.RADIO_BLOCK_ENTITY, pos, state);
+    }
+
+    protected RadioBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
     }
 
     public String url() {
@@ -66,7 +72,7 @@ public class RadioBlockEntity extends BlockEntity {
         sync();
     }
 
-    /** Plays only when switched on and tuned. */
+    /** Sends (a receiver: wants to play) only when switched on and tuned. */
     public boolean sends() {
         return enabled && !url.isEmpty();
     }

@@ -52,7 +52,7 @@ public class AmplifierScreen extends net.minecraft.client.gui.screens.Screen {
         for (Signal s : shown) {
             String name = s.name().isEmpty() ? s.url() : s.name();
             String right = Component.translatable("worldradio.amplifier.row", s.radioX(), s.radioY(), s.radioZ(),
-                    String.format(Locale.ROOT, "%.0f", s.distance()), s.hops(), Math.round(s.factor() * 100)).getString();
+                    String.format(Locale.ROOT, "%.0f", s.distance()), s.hops()).getString();
             rows.add(new StationList.Row(name, right, false, null));
         }
         list.setRows(rows);

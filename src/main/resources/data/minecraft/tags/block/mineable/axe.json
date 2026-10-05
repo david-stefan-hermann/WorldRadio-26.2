@@ -1,5 +1,6 @@
 {
   "values": [
-    "worldradio:radio"
+    "worldradio:receiver",
+    "worldradio:speaker"
   ]
 }

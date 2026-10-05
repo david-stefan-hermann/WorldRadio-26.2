@@ -1,6 +1,10 @@
 {
-  "block.worldradio.radio": "Radio",
+  "block.worldradio.radio": "Radiosender",
   "block.worldradio.amplifier": "Radioverstärker",
+  "block.worldradio.channel": "Sendekanal",
+  "block.worldradio.receiver": "Radio",
+  "block.worldradio.speaker": "Lautsprecher",
+  "item.worldradio.portable_radio": "Kofferradio",
   "soundCategory.radio": "Radio",
   "itemGroup.worldradio": "World Radio",
 
@@ -18,18 +22,21 @@
 
   "worldradio.station.none": "Kein Sender",
   "worldradio.station.clear": "Leeren",
-  "worldradio.station.clear.tooltip": "Sender löschen: das Radio bleibt still, bis du es neu einstellst",
+  "worldradio.station.clear.tooltip": "Sender löschen: von hier wird nichts gesendet, bis du neu einstellst",
   "worldradio.station.off": "Ausschalten",
   "worldradio.station.on": "Einschalten",
-  "worldradio.toggle.on": "Radio an",
-  "worldradio.toggle.off": "Radio aus",
+  "worldradio.toggle.on": "Eingeschaltet",
+  "worldradio.toggle.off": "Ausgeschaltet",
   "worldradio.status.tune": "Wähle unten einen Sender",
   "worldradio.status.disabled": "Aus – Einschalten drücken oder Schleichen + Rechtsklick",
-  "worldradio.status.idle": "Hier nicht zu hören (zu weit weg?)",
+  "worldradio.status.idle": "Hier nicht zu hören",
+  "worldradio.status.sending": "Auf Sendung",
+  "worldradio.status.nosignal": "Kein Empfang für diesen Sender",
   "worldradio.status.connecting": "Verbinde…",
   "worldradio.status.playing": "Läuft",
   "worldradio.status.retrying": "Keine Verbindung (%s), neuer Versuch…",
   "worldradio.status.unsupported": "Dieser Stream geht nicht: %s",
+  "worldradio.transmitter.hint": "Sendet nur ein Signal. Zu hören mit einem Radio oder Kofferradio in Reichweite.",
 
   "worldradio.favorite.add": "Zu deinen Favoriten hinzufügen",
   "worldradio.favorite.remove": "Aus deinen Favoriten entfernen",
@@ -46,14 +53,25 @@
   "worldradio.browse.mp3_only": "Zeigt nur MP3-Sender",
 
   "worldradio.url.label": "Stream-Adresse (MP3, .m3u oder .pls)",
-  "worldradio.url.play": "Abspielen",
+  "worldradio.url.play": "Senden",
   "worldradio.url.invalid": "Das ist keine http(s)-Adresse.",
   "worldradio.url.hint": "Jedes Internetradio mit MP3-Stream geht, z. B. http://stream.kissfm.de/kissfm/mp3-128/internetradio/. AAC-, Ogg- und HLS-Streams werden nicht unterstützt.",
 
   "worldradio.volume": "Lautstärke: %s %%",
   "worldradio.volume.tooltip": "Lautstärke dieses Radios für alle, die es hören. Deine eigene Radio-Lautstärke: Optionen → Musik & Geräusche → Radio",
+  "worldradio.volume.tooltip.portable": "Lautstärke dieses Kofferradios; nur du hörst es. Deine gesamte Radio-Lautstärke: Optionen → Musik & Geräusche → Radio",
+  "worldradio.hearing": "Hörweite %s Blöcke (%s Lautsprecher)",
+  "worldradio.hearing.one": "Hörweite %s Blöcke (1 Lautsprecher)",
+  "worldradio.hearing.hint": "Stell Lautsprecher an das Radio oder an einen schon verbundenen Lautsprecher, um die Hörweite zu erhöhen (je +%s Blöcke). Der Ton wird mit dem Abstand leiser und blendet kurz hinter dieser Weite aus.",
+  "worldradio.channel.host": "Sendet über seinen Radiosender (Reichweite %s Blöcke)",
+  "worldradio.channel.nohost": "Mit keinem Radiosender verbunden",
+  "worldradio.channel.hint": "Ein weiterer Sender für einen Radiosender. Stell ihn an den Sender oder an einen seiner Kanäle.",
+
+  "worldradio.tuner.count": "Sender: %s",
+  "worldradio.tuner.none": "Hier kommt kein Sender an. Geh näher an einen Radiosender oder Verstärker, oder bau einen und stell ihn auf einen Sender ein.",
+  "worldradio.tuner.row": "%s m · Sprünge: %s",
 
   "worldradio.amplifier.count": "%s Signale",
   "worldradio.amplifier.none": "Kein Radiosignal erreicht diesen Verstärker.",
-  "worldradio.amplifier.row": "%s, %s, %s · %s m · Sprünge: %s · %s %%"
+  "worldradio.amplifier.row": "%s, %s, %s · %s m · Sprünge: %s"
 }

@@ -2,11 +2,17 @@ package worldradio.client.audio;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import worldradio.Config;
 import worldradio.WorldRadio;
+import worldradio.item.PortableRadioItem;
+import worldradio.item.Tuning;
 import worldradio.net.Packets;
 import worldradio.signal.Panner;
+import worldradio.signal.Reception;
 import worldradio.signal.SourcePicker;
 import worldradio.signal.SourcePicker.Candidate;
 import worldradio.signal.VolumeCurve;
@@ -18,9 +24,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Decides every client tick what the player hears: each radio and each signal of each amplifier the server listed
- * for this dimension (loaded or not, see {@link Packets.Sources}) is a candidate with its curve volume at the camera; per station only the loudest place plays (with hysteresis), and of
- * the stations only the loudest few. A station that moves from one place to another keeps its sound and stream.
+ * Decides every client tick what the player hears: each playing radio the server listed for this dimension (loaded or
+ * not, see {@link Packets.Sources}) is a candidate with its curve volume at the camera, and so is the portable radio in
+ * the player's inventory when its station's signal arrives here; per station only the loudest place plays (with
+ * hysteresis), and of the stations only the loudest few. A station that moves from one place to another keeps its
+ * sound and stream.
  */
 public final class SourceTracker {
     /** The latest source list from the server. */
@@ -30,6 +38,8 @@ public final class SourceTracker {
     private static final SourcePicker PICKER = new SourcePicker();
     /** Ticks a new sound gets to show up in the sound engine before it counts as lost. */
     private static final int START_GRACE = 40;
+    /** Source id of the portable radio the player carries. */
+    private static final String PORTABLE = "portable";
     private static long ticks;
 
     private record Playing(RadioSoundInstance sound, long started) {
@@ -40,6 +50,28 @@ public final class SourceTracker {
 
     public static void setSources(Packets.Sources list) {
         sources = list;
+    }
+
+    /** The stations a portable radio can pick up where the camera is, strongest first. */
+    public static List<Reception.Heard> receivable(Minecraft minecraft) {
+        Packets.Sources list = sources;
+        if (list == null || minecraft.level == null || !list.dimension().equals(minecraft.level.dimension().identifier())) {
+            return List.of();
+        }
+        Vec3 ear = minecraft.gameRenderer.mainCamera().position();
+        return Reception.at(ear.x, ear.y, ear.z, list.emitters());
+    }
+
+    /** The setting of the first portable radio in the inventory that is switched on and tuned, or null. */
+    private static Tuning carried(Player player) {
+        Inventory inventory = player.getInventory();
+        for (int i = 0; i < inventory.getContainerSize(); i++) {
+            ItemStack stack = inventory.getItem(i);
+            if (!(stack.getItem() instanceof PortableRadioItem)) continue;
+            Tuning tuning = PortableRadioItem.tuning(stack);
+            if (tuning.plays()) return tuning;
+        }
+        return null;
     }
 
     /** What plays right now: station address → position of the place it plays from. */
@@ -83,22 +115,22 @@ public final class SourceTracker {
         Map<String, Vec3> places = new HashMap<>();
         Packets.Sources list = sources;
         if (list != null && list.dimension().equals(level.dimension().identifier())) {
-            for (Packets.RadioSource radio : list.radios()) {
+            for (Packets.RadioSource radio : list.receivers()) {
                 Vec3 centre = Vec3.atCenterOf(radio.pos());
-                double volume = VolumeCurve.volume(centre.distanceTo(ear), radio.range());
+                double volume = VolumeCurve.hearing(centre.distanceTo(ear), radio.range());
                 if (volume <= 0) continue;
                 String id = "r" + radio.pos().asLong();
                 candidates.add(new Candidate(radio.url(), id, volume * radio.volume()));
                 places.put(id, centre);
             }
-            for (Packets.AmpSource amp : list.amplifiers()) {
-                Vec3 centre = Vec3.atCenterOf(amp.pos());
-                double volume = VolumeCurve.volume(centre.distanceTo(ear), amp.range());
-                if (volume <= 0) continue;
-                String id = "a" + amp.pos().asLong();
-                places.put(id, centre);
-                for (Packets.AmpSignal signal : amp.signals()) {
-                    candidates.add(new Candidate(signal.url(), id, volume * signal.factor()));
+            // the portable radio plays at the player, as loud as its station's signal arrives here
+            Tuning carried = carried(minecraft.player);
+            if (carried != null) {
+                // ponytail: scans every emitter each tick; cache per block position if dimensions get thousands of them
+                double strength = Reception.strength(ear.x, ear.y, ear.z, carried.url(), list.emitters());
+                if (strength > 0) {
+                    candidates.add(new Candidate(carried.url(), PORTABLE, strength * carried.volume()));
+                    places.put(PORTABLE, ear);
                 }
             }
         }

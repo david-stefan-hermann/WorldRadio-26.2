@@ -1,0 +1,19 @@
+forceload add -48 -32 64 32
+time set noon
+weather clear
+kill @e[type=!minecraft:player]
+fill -40 -60 -4 130 -52 8 air
+fill -8 -61 -6 8 -61 8 grass_block
+setblock -4 -60 0 worldradio:radio[facing=south]
+setblock -4 -59 0 iron_bars
+setblock -4 -58 0 iron_bars
+worldradio tune -4 -60 0 "http://stream2.early1900s.org:8000/" Radio Dismuke
+setblock -5 -60 0 worldradio:channel[facing=south]
+worldradio tune -5 -60 0 "http://stream.kissfm.de/kissfm/mp3-128/internetradio/" Kiss FM
+setblock -1 -60 0 worldradio:amplifier[facing=south]
+setblock -1 -59 0 iron_chain
+setblock -1 -58 0 iron_chain
+setblock 3 -60 0 worldradio:receiver[facing=south]
+worldradio tune 3 -60 0 "http://stream2.early1900s.org:8000/" Radio Dismuke
+setblock 2 -60 0 worldradio:speaker[facing=south]
+setblock 4 -60 0 worldradio:speaker[facing=south]

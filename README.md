@@ -2,63 +2,93 @@
 
 <img src="src/main/resources/assets/worldradio/icon.png" alt="World Radio logo: the radio block" width="128" align="right">
 
-Internet radio for Minecraft 26.2 (Fabric). A **Radio** block plays an MP3 internet stream to everyone near it,
-**Radio Amplifiers** carry the signal further. Pick stations from the free [Radio-Browser](https://www.radio-browser.info)
-catalogue, search them by name or genre, paste any stream address, and keep your own list of favorites that comes
-with you into every world. Both blocks are in their own creative tab, *World Radio*; the items show them switched on.
+Internet radio for Minecraft 26.2 (Fabric) that works like real radio. A **Radio Transmitter** sends an MP3 internet
+stream as a signal, **Radio Channels** next to it add more stations to the same antenna, **Radio Amplifiers** carry
+the signals further, and you listen where a signal arrives: with a **Radio** block that plays to everyone around it
+(further with **Speakers**), or with a **Portable Radio** in your inventory that only you hear. Where several signals
+arrive, every radio picks its own station. Pick the transmitter's station from the free
+[Radio-Browser](https://www.radio-browser.info) catalogue, search by name or genre, paste any stream address, and keep
+your own list of favorites that comes with you into every world. Everything is in its own creative tab, *World Radio*.
 
-![An untuned radio, a radio with two iron bars, an amplifier without and one with two chains](docs/blocks.png)
+> **Coming from 1.x?** The old Radio block is now the Radio Transmitter: it keeps its station, antenna and range, but
+> it no longer makes a sound by itself. Place a Radio near your builds or carry a Portable Radio to hear it again.
+
+![A Radio Channel next to a Radio Transmitter with two iron bars, a Radio Amplifier with two chains, and a Radio between two Speakers, all running](docs/blocks.png)
 
 ## Download
 
 Get `worldradio-<version>.jar` from [Modrinth](https://modrinth.com/mod/world-radio), [CurseForge](https://www.curseforge.com/projects/1711984) or the
 [GitHub releases](../../releases) and put it into `mods/` on the client and the server, next to Fabric API.
 Requires Minecraft 26.2, Fabric Loader 0.19.3+ and Java 25. The server never streams anything: it only stores
-which station a radio plays, every player's game fetches the stream itself.
+which station a transmitter sends and what each radio is set to, every player's game fetches the stream itself.
 
 ## Usage
 
-| Action | Radio | Amplifier |
-|---|---|---|
-| Right-click (with or without an item) | opens the station screen | lists the signals it receives |
-| Sneak + right-click (empty main hand) | switches it on or off, the station stays | – |
-| Antenna blocks stacked on top | +32 blocks of range each | same |
+| Action | Radio Transmitter | Radio Channel | Radio Amplifier | Radio | Portable Radio |
+|---|---|---|---|---|---|
+| Right-click | opens the station screen | opens the station screen | lists the signals it receives | opens the tuner | opens the tuner |
+| Sneak + right-click | switches it on or off, the station stays | same | – | switches it on or off | switches it on or off |
+| Antenna blocks stacked on top | +32 blocks of signal range each | – (uses its transmitter's) | +32 each | – | – |
+| Makes sound | no | no | no | for everyone in its hearing range | for you, anywhere in your inventory |
 
-The switch works with an empty main hand (the offhand may hold anything); with an item in the main hand, sneaking
-places or uses that item as usual. The station screen has a *Turn off* / *Turn on* button as well. An antenna block clicked onto the top face (the
-socket) is placed there; to place anything else against a radio or amplifier, sneak. `E` (the inventory key) closes
-the screens, unless you are typing into a text box.
+The **Speaker** has no screen: placed against a Radio (or against a speaker that is already connected) it makes that
+radio heard 4 blocks further.
 
-- **Range**: 32 blocks, plus 32 for every antenna block stacked straight on top, up to 32 antenna blocks (1056
-  blocks). The column counts from the block above the radio up to the first block that is not an antenna block;
-  materials may be mixed and the way a block faces does not matter. The screens show the range, e.g. "Range 128
-  blocks (3 antenna blocks)"; the counter updates within a second of a change anywhere in the column.
+The switch on the blocks works with an empty main hand (the offhand may hold anything); with an item in the main
+hand, sneaking places or uses that item as usual. The screens have a *Turn off* / *Turn on* button as well. An antenna
+block clicked onto the top face (the socket) is placed there; to place anything else against one of the blocks,
+sneak. `E` (the inventory key) closes the screens, unless you are typing into a text box.
+
+- **Signal range** of a transmitter or amplifier: 32 blocks, plus 32 for every antenna block stacked straight on top,
+  up to 32 antenna blocks (1056 blocks). The column counts from the block above up to the first block that is not an
+  antenna block; materials may be mixed and the way a block faces does not matter. The screens show the range, e.g.
+  "Range 128 blocks (3 antenna blocks)"; the counter updates within a second of a change anywhere in the column.
 - **Antenna blocks**: end rods, iron bars, iron chains, lightning rods, copper bars and copper chains, every oxidation
   stage and the waxed ones too (27 blocks). They are the block tag `worldradio:antenna`, so data packs can add more.
-- **The front shows the state**: no station, switched off (radio) or no signal (amplifier) = still, red light;
-  otherwise rings run out of the speaker, the meter moves and one bar lights up for the base range, two for one to
-  three antenna blocks, three for four or more. Before and after tuning the radio in the picture above:
+- **Radio Channels** send more than one station from one transmitter: tune a channel like a transmitter and put it
+  against one (any side, also below), or against a channel that is already connected: chains work. The transmitter
+  then sends the channel's station too, from its own place and with its own antenna and range, up to 64 stations.
+  A channel that is connected to no transmitter sends nothing; a switched-off transmitter
+  switches its channels off with it, and a transmitter without a station of its own still sends its channels'.
+- **Amplifiers** pass on every signal that reaches them (from a transmitter or from another amplifier, any number of
+  hops) with their own range.
+- **Radio** (block): its tuner lists the stations whose signal reaches the block; click one to play it. It has its own
+  volume. Its **hearing range** is 4 blocks, plus 4 for every **Speaker** connected to it, up to 64: speakers that
+  touch the radio count, and so do speakers that touch one of those, and so on in a chain. The sound falls from
+  100 % at the block to 20 % at the hearing range and fades out over the next quarter of the range (at least 2
+  blocks). It is heard by everyone in that range and comes from the radio's direction, also with speakers. If its
+  station's signal goes away, it falls silent and plays again when the signal is back.
+- **Portable Radio** (item): its tuner lists the stations that arrive where you stand. It plays while it is anywhere
+  in your inventory, only for you, at full volume inside the signal range; past the range it fades out over the next
+  10 blocks (a quarter of the range above 40). The first portable radio in the inventory that is switched on and
+  tuned plays. The item's tooltip shows its station.
+- **The front shows the state**: no station, switched off or no signal = still, red light; otherwise the transmitter's
+  mast sends waves (the radio's speaker: rings), the meter moves and the bars light up (transmitter and amplifier:
+  one bar for the base range, two for one to three antenna blocks, three for four or more). A channel has a wide
+  meter, the light and a scope with a running wave; a speaker's ring runs outwards while its radio plays.
+- **Far away**: transmitters and amplifiers keep sending when nobody is near them and their chunks are not loaded;
+  the server remembers every one of them (also across restarts), so a signal does not stop at the edge of the view
+  distance.
+- **Direction**: 70 % of a Radio block's sound plays evenly in both ears, 30 % comes from the side the block is on
+  (left or right; ahead and behind sound the same). The share can be changed in the config.
+- If the same station can be heard from several places (two radios, or a radio and your portable radio), only the
+  loudest one plays, so nothing echoes. Up to six different stations play at once.
+- Each player's own volume slider is in *Options → Music & Sounds → Radio*.
+- Anyone may use any block. Each player's game streams the audio itself, so players hear it a few seconds apart.
 
-  ![The same blocks before the radio was tuned: everything at rest](docs/blocks-off.png)
-- **Volume** falls from 100 % at the block to 20 % at the edge of the range, then fades out at the same pace over
-  another quarter of the range (at least 10 blocks): a radio with 288 blocks of range is heard up to 360 blocks.
-  Each radio has its own volume slider in its screen (for everyone who hears it, amplifiers included); each
-  player's own slider is in *Options → Music & Sounds → Radio*.
-- **Far away**: radios and amplifiers keep sending when nobody is near them and their chunks are not loaded; the
-  server remembers every one of them (also across restarts) and tells the players what can be heard, so a station
-  does not stop at the edge of the view distance.
-- **Direction**: 70 % of the sound plays evenly in both ears, 30 % comes from the side the radio is on (left or
-  right; ahead and behind sound the same). The share can be changed in the config.
-- **Amplifiers** re-send every radio signal that reaches them (from a radio or from another amplifier, any number of
-  hops) with their own range. One signal plays at full volume, two or more share the amplifier at 50 % each.
-- If the same station can be heard from several places (a radio and an amplifier), only the loudest one plays, so
-  nothing echoes. Up to six different stations play at once.
-- Anyone may use any radio. Each player's game streams the audio itself, so players hear it a few seconds apart.
+### Tuner (Radio and Portable Radio)
 
-### Station screen
+| Radio | Portable Radio |
+|---|---|
+| ![The tuner of a Radio block](docs/tuner.png) | ![The tuner of a Portable Radio](docs/portable.png) |
 
-The screen looks like an old teak radio: the station on a black glass dial, speaker cloth behind the lists, white
-piano keys.
+Click a station to play it; the key under the list switches the radio on or off, the slider is its volume.
+
+### Station screen (Radio Transmitter and Radio Channel)
+
+All screens share one design, an old radio with the station on a glass dial, cloth behind the lists and white piano
+keys, in the colours of their block: dark steel and orange for the transmitter and the channel, light steel and blue
+for the amplifier, teak for the radios.
 
 ![Favorites](docs/favourites.png)
 
@@ -72,9 +102,10 @@ piano keys.
   Name matches come first, then genre matches; within each, stations from your own country (your Windows region,
   else the game language) lead, then the most listened to. Each row shows country, the first two genres and the
   bitrate.
-- **Clear** removes the station, **Turn off** / **Turn on** silences the radio and keeps it, **Volume** sets this
-  radio's volume for everyone who hears it. The line under the name shows the stream state and the current song
-  title when the station sends one (or "Off"); the line below it shows the range. Hovering the range line (or the amplifier's) explains the antenna blocks:
+- **Clear** removes the station, **Turn off** / **Turn on** stops the transmitter and keeps the station. While the
+  screen is open, your game fetches the station without playing it, so the line under the name tells you whether the
+  stream works: the current song title (or "Playing"), "Cannot play this stream" with the reason, or "No
+  connection". The line below it shows the range. Hovering the range line (or the amplifier's) explains the antenna blocks:
 
 ![Range hint](docs/range-hint.png)
 
@@ -92,13 +123,38 @@ piano keys.
   catalogue is MP3.
 - Stereo streams are mixed down to mono before the mod's own left/right panning.
 - Some stations only allow known player apps and refuse the connection (SomaFM, for example).
-- Version 0.3.0 replaced the signal strength (`power=0..2`) with antennas. Radios and amplifiers from an older world
-  keep their station and simply work with 32 blocks plus their antenna column; the old strength is ignored. Radios
-  from 0.3 load switched on.
+- A speaker makes its radio heard further; the sound still comes from the radio, not from the speaker.
+- Version 2.0.0 split the Radio into transmitter and receivers. Radios from a 1.x world become Radio Transmitters
+  (same block id `worldradio:radio`): station, antenna and on/off stay, their own volume is gone and they are silent
+  until a Radio or Portable Radio picks them up. Amplifiers no longer make sound either.
 
 ## Crafting
 
-Both recipes are in the Redstone tab of the recipe book once you carry a copper ingot.
+The recipes are in the Redstone tab of the recipe book once you carry a copper ingot.
+
+Radio Transmitter – a steel case with a mast:
+
+```
+I L I      I = iron ingot, L = lightning rod
+C R C      C = copper ingot, R = block of redstone
+I I I
+```
+
+Radio Channel – a transmitter without the mast:
+
+```
+I I I      I = iron ingot
+C R C      C = copper ingot, R = redstone
+I I I
+```
+
+Radio Amplifier – a transmitter that re-sends:
+
+```
+I C I      I = iron ingot, C = copper ingot
+C W C      W = a radio transmitter
+I R I      R = redstone
+```
 
 Radio – a wooden case with a speaker and a tuning circuit:
 
@@ -108,12 +164,20 @@ C N R      C = copper ingot (the coil), N = note block (the speaker), R = redsto
 P P P
 ```
 
-Radio Amplifier – a radio in a steel case that re-sends:
+Speaker:
 
 ```
-I C I      I = iron ingot, C = copper ingot
-C W C      W = a radio
-I R I      R = redstone
+P W P      P = any planks, W = any wool
+P N P      N = note block
+P P P
+```
+
+Portable Radio:
+
+```
+  C        C = copper ingot (the antenna)
+I N I      I = iron ingot, N = note block
+  R        R = redstone
 ```
 
 ## Config
@@ -122,40 +186,48 @@ I R I      R = redstone
 
 ```json
 {
-  "configVersion": 4,
+  "configVersion": 5,
   "baseRange": 32,
   "antennaStep": 32,
   "maxAntenna": 32,
+  "hearingBase": 4,
+  "speakerStep": 4,
+  "hearingMax": 64,
   "maxStations": 6,
   "directionalShare": 0.3
 }
 ```
 
-`baseRange`, `antennaStep` and `maxAntenna` are read by the server (radios and amplifiers send their range to the
-players); a `ranges` list from 0.1/0.2 is ignored and dropped from the file, and a 0.3 file (no `configVersion`)
-with the old default step of 8 is moved to 32. `maxStations` (at most 8, which is what the sound engine allows) and
-`directionalShare` (0 = all at the player, 1 = fully left/right) are read by each player's game. The "+32 blocks
-each" in the range tooltip comes from the player's own file.
+`baseRange`, `antennaStep` and `maxAntenna` (signal range) and `hearingBase`, `speakerStep` and `hearingMax` (how far
+a Radio block is heard: without speakers, more per speaker, and at most) are read by the server. Older files are
+carried over: the new entries are added, a
+`ranges` list from 0.1/0.2 is dropped, and a 0.3 file (no `configVersion`) with the old default step of 8 is moved to
+32. `maxStations` (at most 8, which is what the sound engine allows) and `directionalShare` (0 = all at the player,
+1 = fully left/right) are read by each player's game. The "+32 blocks each" and "+4 blocks each" in the tooltips
+come from the player's own file.
 
 ## Commands (operators)
 
-- `/worldradio tune <pos> "<url>" [name]` – tune a radio.
-- `/worldradio enable <pos> true|false` – switch a radio on or off.
-- `/worldradio status <pos>` – range, antenna blocks and level of a radio or amplifier, whether the radio is on and
-  what it plays, or which signals the amplifier receives.
+- `/worldradio tune <pos> "<url>" [name]` – set the station of a transmitter, a channel or a radio.
+- `/worldradio enable <pos> true|false` – switch a transmitter, a channel or a radio on or off.
 - `/worldradio volume <pos> <0-100>` – set a radio's volume.
+- `/worldradio status <pos>` – range, antenna blocks and level of a transmitter or amplifier, what a transmitter or
+  channel sends, which signals an amplifier or radio receives, a radio's hearing range and speakers, what it is set
+  to and whether it plays.
 
 ## Building
 
 Java 25, `./gradlew build` → `build/libs/worldradio-<version>.jar`. Needs Fabric API on client and server.
 
-Test tools in `tools/`: `test-signal.sh` (signal graph, antenna range and level, volume curve, source choice,
-panning – plain Java), `stream-probe.sh` (decodes live streams outside Minecraft; `--pan -1|0|1` measures the stereo
-mix), `dev-test-network.sh` (RCON test against the dev server), `dev-screenshot.sh`
-(dev client screenshots, clicks with an item in hand, the on/off button, list clicks, renaming, the volume slider,
-typing, hovering, walking and circling, and a per-second log of what the player hears).
+Test tools in `tools/`: `test-signal.sh` (signal graph, antenna range and level, volume and reception curves, what a
+portable radio picks up, source choice, panning – plain Java), `stream-probe.sh` (decodes live streams outside
+Minecraft; `--pan -1|0|1` measures the stereo mix), `dev-test-network.sh` (RCON test against the dev server),
+`dev-screenshot.sh` (dev client screenshots, clicks with an item in hand, using the held item, the on/off button,
+list clicks, renaming, the volume slider, typing, hovering, walking and circling, and a per-second log of what the
+player hears).
 
-The art is generated, run from the project folder: `java tools/MakeTextures.java` (block textures and models),
+The art is generated, run from the project folder: `java tools/MakeTextures.java` (block and item textures, block
+models), `java tools/MakeResources.java` (blockstates, item models, loot tables),
 `java tools/MakeGuiTextures.java` (screen panels and keys), `java tools/MakeLogo.java <variant>` (the logo
 `icon.png`, rendered from the block textures; previews in `art/logo/`).
 

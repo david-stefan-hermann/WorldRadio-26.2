@@ -11,13 +11,14 @@ import worldradio.client.audio.StationStream;
 import worldradio.client.audio.StreamPool;
 import worldradio.client.screen.AmplifierScreen;
 import worldradio.client.screen.RadioScreen;
+import worldradio.client.screen.TunerScreen;
 
 import java.util.Locale;
 import java.util.Map;
 
 /**
  * With -Dworldradio.dev.screenshot=NAME the client waits after joining, optionally opens a screen
- * (-Dworldradio.dev.screen=radio|browse|url|search|amplifier,x,y,z, creative or sounds), saves screenshots/NAME.png and NAME-b.png, logs what it
+ * (-Dworldradio.dev.screen=radio|browse|url|search|amplifier|tuner,x,y,z, portable, creative or sounds), saves screenshots/NAME.png and NAME-b.png, logs what it
  * hears every second and quits after -Dworldradio.dev.ticks (default 200). -Dworldradio.dev.walk=dx,dz moves the
  * player by that much every second after the first screenshot (distance test for the volume curve).
  */
@@ -42,6 +43,7 @@ public final class DevClientHooks {
         if (ticks == 60) openScreen(minecraft);
         if (ticks == 80) typeKeys(minecraft);
         useBlock(minecraft);
+        useItem(minecraft);
         if (ticks == 80 && System.getProperty("worldradio.dev.star") != null
                 && minecraft.gui.screen() instanceof RadioScreen radio) {
             radio.devPressStar();
@@ -58,9 +60,10 @@ public final class DevClientHooks {
         }
         if (ticks >= 100 && ticks <= 141 && System.getProperty("worldradio.dev.hover") != null) hoverRangeLine(minecraft, ticks <= 140);
         if (minecraft.gui.screen() instanceof RadioScreen radio) radioScreenTests(radio);
+        if (minecraft.gui.screen() instanceof TunerScreen tuner) tunerScreenTests(tuner);
         if (ticks == 130 || ticks == end - 20) minecraft.gui.toastManager().clear(); // join/tutorial toasts
         if (ticks == 140) grab(minecraft, name + ".png");
-        if (ticks > 100 && ticks % 20 == 0) {
+        if (ticks >= 40 && ticks % 20 == 0) {
             if (ticks > 140) walk(minecraft);
             if (ticks > 140) orbit(minecraft);
             report(minecraft);
@@ -75,7 +78,7 @@ public final class DevClientHooks {
     /**
      * Station screen tests: -Dworldradio.dev.click=N clicks list row N at tick 80 and logs the marked rows at 100 and
      * 120; -Dworldradio.dev.rename=N opens the rename box of favorite N at tick 75 (TYPE then types into it at 80 and
-     * -Dworldradio.dev.enter presses Enter at 85); -Dworldradio.dev.volume=0.4 moves the volume slider at tick 80.
+     * -Dworldradio.dev.enter presses Enter at 85).
      */
     private static void radioScreenTests(RadioScreen radio) {
         String click = System.getProperty("worldradio.dev.click");
@@ -88,16 +91,33 @@ public final class DevClientHooks {
             radio.keyPressed(new net.minecraft.client.input.KeyEvent(org.lwjgl.glfw.GLFW.GLFW_KEY_ENTER, 0, 0));
             WorldRadio.LOGGER.info("Dev: pressed Enter, favorites now {}", FavouritesCache.list());
         }
+    }
+
+    /**
+     * Tuner tests (radio block or portable radio): -Dworldradio.dev.click=N clicks station row N at tick 80,
+     * -Dworldradio.dev.volume=0.4 moves the volume slider at tick 80, -Dworldradio.dev.power presses the on/off key at
+     * tick 80; the rows on offer are logged at ticks 70, 100 and 120.
+     */
+    private static void tunerScreenTests(TunerScreen tuner) {
+        if (ticks == 70 || ticks == 100 || ticks == 120) WorldRadio.LOGGER.info("Dev: tuner t={}: {}", ticks, tuner.devRows());
+        if (ticks != 80) return;
+        String click = System.getProperty("worldradio.dev.click");
+        if (click != null) tuner.devClickRow(Integer.parseInt(click));
         String volume = System.getProperty("worldradio.dev.volume");
-        if (volume != null && ticks == 80) {
-            radio.devSetVolume(Double.parseDouble(volume));
+        if (volume != null) {
+            tuner.devSetVolume(Double.parseDouble(volume));
             WorldRadio.LOGGER.info("Dev: moved the volume slider to {}", volume);
+        }
+        if (System.getProperty("worldradio.dev.power") != null) {
+            tuner.devPressPower();
+            WorldRadio.LOGGER.info("Dev: pressed the tuner's on/off button");
         }
     }
 
-    /** The block of -Dworldradio.dev.screen=...,x,y,z. */
+    /** The block of -Dworldradio.dev.screen=...,x,y,z; the origin for screens without a block. */
     private static BlockPos powerPos() {
         String[] p = System.getProperty("worldradio.dev.screen", "radio,0,0,0").split(",");
+        if (p.length < 4) return BlockPos.ZERO;
         return new BlockPos(Integer.parseInt(p[1].trim()), Integer.parseInt(p[2].trim()), Integer.parseInt(p[3].trim()));
     }
 
@@ -117,9 +137,15 @@ public final class DevClientHooks {
             minecraft.gui.setScreen(new net.minecraft.client.gui.screens.options.SoundOptionsScreen(null, minecraft.options));
             return;
         }
+        if (p[0].trim().equals("portable")) {
+            minecraft.gui.setScreen(new TunerScreen(net.minecraft.world.InteractionHand.MAIN_HAND));
+            WorldRadio.LOGGER.info("Dev: opened the tuner of the portable radio in the main hand ({})", minecraft.player.getMainHandItem());
+            return;
+        }
         BlockPos pos = new BlockPos(Integer.parseInt(p[1].trim()), Integer.parseInt(p[2].trim()), Integer.parseInt(p[3].trim()));
         switch (p[0].trim()) {
             case "amplifier" -> minecraft.gui.setScreen(new AmplifierScreen(pos));
+            case "tuner" -> minecraft.gui.setScreen(new TunerScreen(pos));
             case "browse" -> {
                 RadioScreen.devCountry = System.getProperty("worldradio.dev.country");
                 minecraft.gui.setScreen(new RadioScreen(pos, RadioScreen.Tab.BROWSE));
@@ -191,6 +217,28 @@ public final class DevClientHooks {
     }
 
     /**
+     * -Dworldradio.dev.useitem=plain|sneak right-clicks into the air with the item in the main hand at tick 80 (the
+     * portable radio: plain opens its tuner, sneaking switches it) and logs the stack and the open screen at tick 90.
+     */
+    private static void useItem(Minecraft minecraft) {
+        String raw = System.getProperty("worldradio.dev.useitem");
+        if (raw == null || minecraft.gameMode == null) return;
+        boolean sneak = raw.trim().equals("sneak");
+        if (ticks == 70 && sneak) minecraft.options.keyShift.setDown(true);
+        if (ticks == 80) {
+            var result = minecraft.gameMode.useItem(minecraft.player, net.minecraft.world.InteractionHand.MAIN_HAND);
+            WorldRadio.LOGGER.info("Dev: used {}{} -> {}", minecraft.player.getMainHandItem(), sneak ? " (sneaking)" : "", result);
+        }
+        if (ticks == 90) {
+            var screen = minecraft.gui.screen();
+            var held = minecraft.player.getMainHandItem();
+            WorldRadio.LOGGER.info("Dev: after using the item: {} screen={}", held.getItem() instanceof worldradio.item.PortableRadioItem
+                    ? worldradio.item.PortableRadioItem.tuning(held) : held, screen == null ? "none" : screen.getClass().getSimpleName());
+        }
+        if (ticks == 91 && sneak) minecraft.options.keyShift.setDown(false);
+    }
+
+    /**
      * -Dworldradio.dev.hover=1 puts the mouse on the range line of the open screen (ticks 100-140) so its tooltip shows
      * in the first screenshot, then into the top left corner for the second. The mouse handler's position is set
      * directly; the real cursor does not move.
@@ -252,8 +300,14 @@ public final class DevClientHooks {
             WorldRadio.LOGGER.info("Radio: {} yaw={} ({})", SourceTracker.panOf(url),
                     String.format(Locale.ROOT, "%.0f", minecraft.gameRenderer.mainCamera().yRot()), url);
         }
-        WorldRadio.LOGGER.info("Dev hear t={} at {}:{}", ticks, String.format(Locale.ROOT, "%.1f,%.1f,%.1f",
-                ear.x, ear.y, ear.z), out.isEmpty() ? " nothing" : out);
+        var held = minecraft.player.getMainHandItem();
+        if (held.getItem() instanceof worldradio.item.PortableRadioItem) {
+            out.append(" held=").append(worldradio.item.PortableRadioItem.tuning(held));
+        }
+        if (minecraft.gui.screen() instanceof RadioScreen radio) out.append(" check=").append(radio.devProbe());
+        boolean silent = SourceTracker.playing().isEmpty();
+        WorldRadio.LOGGER.info("Dev hear t={} at {}:{}{}", ticks, String.format(Locale.ROOT, "%.1f,%.1f,%.1f",
+                ear.x, ear.y, ear.z), silent ? " nothing" : "", out);
     }
 
     private static void grab(Minecraft minecraft, String file) {

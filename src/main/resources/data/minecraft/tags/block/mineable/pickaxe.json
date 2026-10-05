@@ -1,5 +1,7 @@
 {
   "values": [
-    "worldradio:amplifier"
+    "worldradio:amplifier",
+    "worldradio:radio",
+    "worldradio:channel"
   ]
 }

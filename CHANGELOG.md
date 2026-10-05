@@ -1,5 +1,22 @@
 # Changelog
 
+## 2.0.0
+Radio now works like real radio: transmitters send a signal, and sound comes from the radios that receive it.
+
+**Changed for existing worlds:** the Radio block of 1.x is now the **Radio Transmitter** (same block, new look). It keeps its station, antenna and range, but neither it nor the amplifiers make a sound any more. Place a Radio or carry a Portable Radio to listen.
+
+- New **Radio** block: its tuner lists the stations whose signal reaches it; pick one and it plays to everyone within its hearing range, with its own volume. It took over the wooden look of the old radio.
+- New **Speaker** block: a radio is heard for 4 blocks; every speaker placed against it, or against a speaker that is already connected, adds 4 more (up to 64).
+- New **Radio Channel** block: tune it like a transmitter and put it against one (or against another channel of it, chains work), and that transmitter sends its station too, over the same antenna. This is how one mast sends several stations.
+- New **Portable Radio** item: plays the station you pick to you alone while it is anywhere in your inventory, as long as that station's signal reaches you. Right-click opens the tuner, sneak + right-click switches it.
+- Where several signals overlap, every radio and every player chooses which station to hear.
+- Signal range is unchanged (32 blocks plus 32 per antenna block); reception is full inside the range and fades out just past it.
+- Amplifiers pass on every signal at full strength; the 50 % sharing rule is gone.
+- The transmitter's screen checks the station silently while it is open and shows the song title or why the stream cannot be played.
+- The transmitter's volume slider is gone (volume belongs to each radio). New config entries `hearingBase`, `speakerStep` and `hearingMax`.
+- New looks: the transmitter is a dark steel case with a mast, the amplifier got a mast too, and their screens (and the channel's) are coloured like the blocks; the radios keep the teak.
+- New recipes for the Radio Transmitter, the Radio Channel, the Speaker and the Portable Radio; the Radio keeps the old radio recipe.
+
 ## 1.0.1
 - Fixed sneak + right-click not switching the radio on or off while the offhand holds something (a shield or totem, for example): Minecraft skips block interaction while sneaking as soon as either hand is occupied, so the switch is now taken before that check. It needs an empty main hand only.
 

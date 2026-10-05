@@ -7,9 +7,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import worldradio.Config;
 import worldradio.WorldRadio;
+import worldradio.client.audio.StationStream;
+import worldradio.client.audio.StreamPool;
 
 /**
- * The look of the radio and amplifier screens: a teak case with a black glass dial, speaker cloth behind the lists and
+ * The look of the transmitter, amplifier and tuner screens: a teak case with a black glass dial, speaker cloth behind the lists and
  * white piano keys (the "walnut-teak" design made by tools/MakeGuiTextures.java), its colours and small helpers.
  */
 public final class RadioUi {
@@ -34,6 +36,9 @@ public final class RadioUi {
 
     public static final Identifier RADIO_PANEL = WorldRadio.id("textures/gui/radio.png");
     public static final Identifier AMPLIFIER_PANEL = WorldRadio.id("textures/gui/amplifier.png");
+    public static final Identifier TUNER_PANEL = WorldRadio.id("textures/gui/tuner.png");
+    /** Text straight on the wood (drawn with a shadow). */
+    public static final int BODY = 0xFFFFF4DC;
     static final Identifier KEY = WorldRadio.id("key");
     static final Identifier KEY_HIGHLIGHTED = WorldRadio.id("key_highlighted");
     static final Identifier KEY_DISABLED = WorldRadio.id("key_disabled");
@@ -76,6 +81,31 @@ public final class RadioUi {
             // the default positioner puts the box 12 right of and 12 above the point: this lands it under the line
             g.setTooltipForNextFrame(font, font.split(hint, HINT_WIDTH), x - 12 + 4, y + 12 + 14);
         }
+    }
+
+    public record StatusLine(String text, int colour) {
+    }
+
+    /**
+     * The line under the station name: what to do while nothing is tuned or it is switched off, else the state of this
+     * client's stream of the station (song title while it plays). {@code idleKey} is said while this client does not
+     * play the station at all.
+     */
+    public static StatusLine status(String url, boolean enabled, String idleKey) {
+        if (url.isEmpty()) return new StatusLine(Component.translatable("worldradio.status.tune").getString(), TEXT_SOFT);
+        if (!enabled) return new StatusLine(Component.translatable("worldradio.status.disabled").getString(), WARN);
+        StationStream stream = StreamPool.find(url);
+        StatusLine idle = new StatusLine(Component.translatable(idleKey).getString(), TEXT_SOFT);
+        if (stream == null) return idle;
+        return switch (stream.state()) {
+            case PLAYING -> new StatusLine(stream.title().isEmpty()
+                    ? Component.translatable("worldradio.status.playing").getString()
+                    : "♪ " + stream.title(), ACCENT);
+            case CONNECTING -> new StatusLine(Component.translatable("worldradio.status.connecting").getString(), TEXT_SOFT);
+            case RETRYING -> new StatusLine(Component.translatable("worldradio.status.retrying", stream.detail()).getString(), WARN);
+            case UNSUPPORTED -> new StatusLine(Component.translatable("worldradio.status.unsupported", stream.detail()).getString(), ERROR);
+            case CLOSED -> idle;
+        };
     }
 
     /** Cuts the text to the width with an ellipsis. */

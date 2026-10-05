@@ -1,0 +1,12 @@
+{
+  "variants": {
+    "facing=north,lit=false": { "model": "worldradio:block/speaker" },
+    "facing=east,lit=false": { "model": "worldradio:block/speaker", "y": 90 },
+    "facing=south,lit=false": { "model": "worldradio:block/speaker", "y": 180 },
+    "facing=west,lit=false": { "model": "worldradio:block/speaker", "y": 270 },
+    "facing=north,lit=true": { "model": "worldradio:block/speaker_on" },
+    "facing=east,lit=true": { "model": "worldradio:block/speaker_on", "y": 90 },
+    "facing=south,lit=true": { "model": "worldradio:block/speaker_on", "y": 180 },
+    "facing=west,lit=true": { "model": "worldradio:block/speaker_on", "y": 270 }
+  }
+}

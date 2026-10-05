@@ -15,8 +15,9 @@ import net.minecraft.world.phys.BlockHitResult;
 import worldradio.server.RadioNetwork;
 
 /**
- * The only real sound source: plays the station stored in its block entity to everyone within its range. Sneak +
- * right-click switches it on or off (the station stays); vanilla only lets that through with an empty hand.
+ * The transmitter ("Radio Transmitter" in the game): sends the station stored in its block entity as a signal to every
+ * amplifier, radio and portable radio within its range, and makes no sound itself. Sneak + right-click switches it on
+ * or off (the station stays); vanilla only lets that through with an empty hand.
  */
 public class RadioBlock extends SignalBlock {
     public static final MapCodec<RadioBlock> CODEC = simpleCodec(RadioBlock::new);
@@ -26,7 +27,7 @@ public class RadioBlock extends SignalBlock {
     }
 
     @Override
-    protected MapCodec<RadioBlock> codec() {
+    protected MapCodec<? extends RadioBlock> codec() {
         return CODEC;
     }
 

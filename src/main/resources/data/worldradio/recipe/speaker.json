@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "key": {
+    "P": "#minecraft:planks",
+    "W": "#minecraft:wool",
+    "N": "minecraft:note_block"
+  },
+  "pattern": [
+    "PWP",
+    "PNP",
+    "PPP"
+  ],
+  "result": {
+    "id": "worldradio:speaker"
+  }
+}

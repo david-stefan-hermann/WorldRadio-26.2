@@ -54,6 +54,7 @@ if (project.hasProperty('devScreenshot')) {
                 if (project.hasProperty('devKey')) vmArg "-Dworldradio.dev.key=${project.devKey}"
                 if (project.hasProperty('devOrbit')) vmArg "-Dworldradio.dev.orbit=${project.devOrbit}"
                 if (project.hasProperty('devUse')) vmArg "-Dworldradio.dev.use=${project.devUse}"
+                if (project.hasProperty('devUseItem')) vmArg "-Dworldradio.dev.useitem=${project.devUseItem}"
                 if (project.hasProperty('devHover')) vmArg "-Dworldradio.dev.hover=1"
                 if (project.hasProperty('devSearch')) vmArg "-Dworldradio.dev.search=${project.devSearch}"
                 if (project.hasProperty('devCountry')) vmArg "-Dworldradio.dev.country=${project.devCountry}"

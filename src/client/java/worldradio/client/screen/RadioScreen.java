@@ -9,9 +9,11 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import org.lwjgl.glfw.GLFW;
+import worldradio.block.ChannelBlockEntity;
 import worldradio.block.RadioBlockEntity;
 import worldradio.client.FavouritesCache;
 import worldradio.client.api.RadioBrowser;
+import worldradio.client.audio.PcmBuffer;
 import worldradio.client.audio.StationStream;
 import worldradio.client.audio.StreamPool;
 import worldradio.net.Packets;
@@ -24,9 +26,8 @@ import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 
 /**
- * The station screen of a radio: the current station with its stream state, song title and range, a star to add it to
- * the player's favorites, Clear, a Turn off/Turn on key and the radio's volume at the bottom, and four tabs to pick a
- * station: Favorites (renamable), Browse (country → region → station from Radio-Browser, with a filter), URL (any
+ * The station screen of a transmitter or a channel: the station it sends with its range (a channel: its transmitter's), a star to add it to the player's
+ * favorites, Clear and a Turn off/Turn on key at the bottom, and four tabs to pick a station: Favorites (renamable), Browse (country → region → station from Radio-Browser, with a filter), URL (any
  * http(s) MP3 stream or playlist) and Search (station name or genre).
  */
 public class RadioScreen extends net.minecraft.client.gui.screens.Screen {
@@ -35,10 +36,8 @@ public class RadioScreen extends net.minecraft.client.gui.screens.Screen {
     private static final int HEIGHT = 236;
     /** Station name, stream status and range line. */
     private static final int HEADER = 46;
-    /** The volume slider starts right of the Clear and on/off keys. */
+    /** The hint starts right of the Clear and on/off keys. */
     private static final int FOOTER_X = 148;
-    /** Ticks between two volume packets while the slider is dragged. */
-    private static final int VOLUME_SEND_EVERY = 4;
 
     public enum Tab { FAVOURITES, BROWSE, URL, SEARCH }
 
@@ -80,11 +79,9 @@ public class RadioScreen extends net.minecraft.client.gui.screens.Screen {
     private KeyButton star;
     private KeyButton power;
     private KeyButton back;
-    private VolumeSlider volume;
-    /** The slider's value while this screen is open (-1: not touched yet, take the radio's). */
-    private double volumeValue = -1;
-    private float volumeToSend = -1;
-    private int volumeCooldown;
+    /** The station this screen checks without playing it, and the buffer its samples fall into unheard. */
+    private String probeUrl = "";
+    private PcmBuffer probeBuffer;
     /** The favorite being renamed and its text box. */
     private String renameUrl;
     private EditBox renameBox;
@@ -169,10 +166,6 @@ public class RadioScreen extends net.minecraft.client.gui.screens.Screen {
                 b -> tune("", "", "")).tooltip(Component.translatable("worldradio.station.clear.tooltip")));
         power = addRenderableWidget(new KeyButton(left + 72, top + HEIGHT - 24, 70, 18,
                 Component.translatable("worldradio.station.off"), b -> togglePower()));
-        RadioBlockEntity radio = radio();
-        if (volumeValue < 0) volumeValue = radio == null ? 1.0 : radio.volume();
-        volume = addRenderableWidget(new VolumeSlider(left + FOOTER_X, top + HEIGHT - 24, WIDTH - FOOTER_X - 8, 18, volumeValue));
-        volume.setTooltip(Tooltip.create(Component.translatable("worldradio.volume.tooltip")));
         favouritesVersion = -1;
         refreshList();
     }
@@ -197,12 +190,32 @@ public class RadioScreen extends net.minecraft.client.gui.screens.Screen {
         // a new station or a changed list: mark the right row
         if (FavouritesCache.version() != favouritesVersion || !radio.url().equals(listedUrl)) refreshList();
         if (searchBox != null && searchCountdown >= 0 && searchCountdown-- == 0) runSearch();
-        if (volumeCooldown > 0) volumeCooldown--;
-        if (volumeToSend >= 0 && volumeCooldown == 0) {
-            ClientPlayNetworking.send(new Packets.SetVolume(pos, volumeToSend));
-            volumeToSend = -1;
-            volumeCooldown = VOLUME_SEND_EVERY;
-        }
+        probe(radio.sends() ? radio.url() : "");
+    }
+
+    /**
+     * The transmitter makes no sound, so while its screen is open this client fetches and decodes the station without
+     * playing it: the status line then says whether the stream works (and the song title) or why it does not. The
+     * stream closes a few seconds after the screen, unless a radio here plays the same station.
+     */
+    private void probe(String url) {
+        if (url.equals(probeUrl)) return;
+        if (probeBuffer != null) StreamPool.release(probeUrl, probeBuffer);
+        probeUrl = url;
+        probeBuffer = url.isEmpty() ? null : StreamPool.acquire(url);
+    }
+
+    @Override
+    public void removed() {
+        probe("");
+        super.removed();
+    }
+
+    /** Dev tests only: the state of the stream check. */
+    public String devProbe() {
+        StationStream stream = StreamPool.find(probeUrl);
+        return stream == null ? "none" : stream.state() + (stream.detail().isEmpty() ? "" : " (" + stream.detail() + ")")
+                + " decoded=" + stream.samplesOut();
     }
 
     /** Runs once the player stopped typing for {@link #SEARCH_DELAY} ticks. */
@@ -261,11 +274,6 @@ public class RadioScreen extends net.minecraft.client.gui.screens.Screen {
     public void devStartRename(int index) {
         List<Favourite> favourites = FavouritesCache.list();
         if (tab == Tab.FAVOURITES && index < favourites.size()) startRename(index, favourites.get(index));
-    }
-
-    /** Dev tests only: moves the volume slider like a drag would. */
-    public void devSetVolume(double value) {
-        volume.set(value);
     }
 
     /** Dev tests only: the names of the rows marked as playing. */
@@ -485,10 +493,20 @@ public class RadioScreen extends net.minecraft.client.gui.screens.Screen {
             String name = radio.url().isEmpty() ? Component.translatable("worldradio.station.none").getString()
                     : radio.name().isEmpty() ? hostOf(radio.url()) : radio.name();
             g.text(font, RadioUi.ellipsize(font, name, WIDTH - 50), left + 8, top + 8, RadioUi.TEXT, false);
-            StatusLine status = status(radio);
+            // the transmitter makes no sound; the stream state comes from this screen's silent check, see probe()
+            RadioUi.StatusLine status = RadioUi.status(radio.url(), radio.enabled(), "worldradio.status.sending");
             g.text(font, RadioUi.ellipsize(font, status.text(), WIDTH - 50), left + 8, top + 20, status.colour(), false);
-            RadioUi.rangeLine(g, font, radio.range(), radio.antenna(), left + 8, top + 32, mouseX, mouseY);
+            if (!(radio instanceof ChannelBlockEntity)) {
+                RadioUi.rangeLine(g, font, radio.range(), radio.antenna(), left + 8, top + 32, mouseX, mouseY);
+            } else if (radio.range() > 0) {
+                // a channel has no antenna of its own: range and antenna are its transmitter's
+                g.text(font, Component.translatable("worldradio.channel.host", radio.range()), left + 8, top + 32, RadioUi.TEXT_SOFT, false);
+            } else {
+                g.text(font, Component.translatable("worldradio.channel.nohost"), left + 8, top + 32, RadioUi.WARN, false);
+            }
         }
+        g.textWithWordWrap(font, Component.translatable(radio instanceof ChannelBlockEntity ? "worldradio.channel.hint"
+                : "worldradio.transmitter.hint"), left + FOOTER_X, top + HEIGHT - 24, WIDTH - FOOTER_X - 8, RadioUi.BODY, true);
         int contentTop = top + HEADER + 32;
         switch (tab) {
             case FAVOURITES, SEARCH -> list.extract(g, font, mouseX, mouseY);
@@ -512,25 +530,6 @@ public class RadioScreen extends net.minecraft.client.gui.screens.Screen {
         }
         // widgets (keys, slider, text boxes, the rename box) on top of the list
         super.extractRenderState(g, mouseX, mouseY, partialTick);
-    }
-
-    private record StatusLine(String text, int colour) {
-    }
-
-    private StatusLine status(RadioBlockEntity radio) {
-        if (radio.url().isEmpty()) return new StatusLine(Component.translatable("worldradio.status.tune").getString(), RadioUi.TEXT_SOFT);
-        if (!radio.enabled()) return new StatusLine(Component.translatable("worldradio.status.disabled").getString(), RadioUi.WARN);
-        StationStream stream = StreamPool.find(radio.url());
-        if (stream == null) return new StatusLine(Component.translatable("worldradio.status.idle").getString(), RadioUi.TEXT_SOFT);
-        return switch (stream.state()) {
-            case PLAYING -> new StatusLine(stream.title().isEmpty()
-                    ? Component.translatable("worldradio.status.playing").getString()
-                    : "♪ " + stream.title(), RadioUi.ACCENT);
-            case CONNECTING -> new StatusLine(Component.translatable("worldradio.status.connecting").getString(), RadioUi.TEXT_SOFT);
-            case RETRYING -> new StatusLine(Component.translatable("worldradio.status.retrying", stream.detail()).getString(), RadioUi.WARN);
-            case UNSUPPORTED -> new StatusLine(Component.translatable("worldradio.status.unsupported", stream.detail()).getString(), RadioUi.ERROR);
-            case CLOSED -> new StatusLine(Component.translatable("worldradio.status.idle").getString(), RadioUi.TEXT_SOFT);
-        };
     }
 
     // ---- input
@@ -573,37 +572,7 @@ public class RadioScreen extends net.minecraft.client.gui.screens.Screen {
     }
 
     @Override
-    public void removed() {
-        // a drag that ended just before closing still counts
-        if (volumeToSend >= 0) ClientPlayNetworking.send(new Packets.SetVolume(pos, volumeToSend));
-        super.removed();
-    }
-
-    @Override
     public boolean isPauseScreen() {
         return false;
-    }
-
-    /** The radio's own volume, 0 to 100 %, for everyone who hears it. */
-    private final class VolumeSlider extends KeySlider {
-        VolumeSlider(int x, int y, int width, int height, double value) {
-            super(x, y, width, height, value);
-            updateMessage();
-        }
-
-        void set(double v) {
-            setValue(v);
-        }
-
-        @Override
-        protected void updateMessage() {
-            setMessage(Component.translatable("worldradio.volume", Math.round(value * 100)));
-        }
-
-        @Override
-        protected void applyValue() {
-            volumeValue = value;
-            volumeToSend = (float) value;
-        }
     }
 }

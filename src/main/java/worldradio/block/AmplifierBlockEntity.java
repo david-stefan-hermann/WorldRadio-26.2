@@ -21,7 +21,7 @@ import java.util.List;
 
 /**
  * The signals reaching an amplifier, its range and the antenna blocks on top of it. All are worked out by
- * {@link worldradio.server.RadioNetwork} and synced to the clients, which play each signal from here.
+ * {@link worldradio.server.RadioNetwork} and synced to the clients for the amplifier's screen.
  */
 public class AmplifierBlockEntity extends BlockEntity {
     public static final Codec<Signal> SIGNAL_CODEC = RecordCodecBuilder.create(i -> i.group(
@@ -29,10 +29,9 @@ public class AmplifierBlockEntity extends BlockEntity {
             Codec.STRING.fieldOf("url").forGetter(Signal::url),
             Codec.STRING.fieldOf("name").forGetter(Signal::name),
             Codec.DOUBLE.fieldOf("distance").forGetter(Signal::distance),
-            Codec.INT.fieldOf("hops").forGetter(Signal::hops),
-            Codec.DOUBLE.fieldOf("factor").forGetter(Signal::factor)
-    ).apply(i, (pos, url, name, distance, hops, factor) -> new Signal(pos.asLong(), pos.getX(), pos.getY(), pos.getZ(),
-            url, name, distance, hops, factor)));
+            Codec.INT.fieldOf("hops").forGetter(Signal::hops)
+    ).apply(i, (pos, url, name, distance, hops) -> new Signal(pos.asLong(), pos.getX(), pos.getY(), pos.getZ(),
+            url, name, distance, hops)));
 
     private List<Signal> signals = List.of();
     private int range;

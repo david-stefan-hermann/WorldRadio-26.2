@@ -13,6 +13,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
@@ -33,8 +34,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import worldradio.block.AmplifierBlock;
 import worldradio.block.AmplifierBlockEntity;
+import worldradio.block.ChannelBlock;
+import worldradio.block.ChannelBlockEntity;
 import worldradio.block.RadioBlock;
+import worldradio.block.SpeakerBlock;
 import worldradio.block.RadioBlockEntity;
+import worldradio.block.ReceiverBlock;
+import worldradio.block.ReceiverBlockEntity;
+import worldradio.item.PortableRadioItem;
+import worldradio.item.Tuning;
 import worldradio.net.Packets;
 import worldradio.server.RadioCommand;
 import worldradio.server.RadioNetwork;
@@ -49,10 +57,20 @@ public class WorldRadio implements ModInitializer {
         return Identifier.fromNamespaceAndPath(MOD_ID, path);
     }
 
+    /** The transmitter. It keeps the id it had as the all-in-one radio of 1.x, so worlds keep their blocks. */
     public static final Block RADIO = registerBlock("radio", props -> new RadioBlock(props
-            .strength(1.5f).sound(SoundType.WOOD)));
+            .strength(1.5f).sound(SoundType.METAL)));
     public static final Block AMPLIFIER = registerBlock("amplifier", props -> new AmplifierBlock(props
             .strength(2.5f).sound(SoundType.METAL).requiresCorrectToolForDrops()));
+    /** One more station for the transmitter it touches. */
+    public static final Block CHANNEL = registerBlock("channel", props -> new ChannelBlock(props
+            .strength(1.5f).sound(SoundType.METAL)));
+    /** The radio players listen to. */
+    public static final Block RECEIVER = registerBlock("receiver", props -> new ReceiverBlock(props
+            .strength(1.5f).sound(SoundType.WOOD)));
+    /** Extends the hearing range of the radio it is connected to. */
+    public static final Block SPEAKER = registerBlock("speaker", props -> new SpeakerBlock(props
+            .strength(1.5f).sound(SoundType.WOOD)));
 
     public static final BlockEntityType<RadioBlockEntity> RADIO_BLOCK_ENTITY = Registry.register(
             BuiltInRegistries.BLOCK_ENTITY_TYPE, id("radio"),
@@ -60,18 +78,37 @@ public class WorldRadio implements ModInitializer {
     public static final BlockEntityType<AmplifierBlockEntity> AMPLIFIER_BLOCK_ENTITY = Registry.register(
             BuiltInRegistries.BLOCK_ENTITY_TYPE, id("amplifier"),
             FabricBlockEntityTypeBuilder.create(AmplifierBlockEntity::new, AMPLIFIER).build());
+    public static final BlockEntityType<ChannelBlockEntity> CHANNEL_BLOCK_ENTITY = Registry.register(
+            BuiltInRegistries.BLOCK_ENTITY_TYPE, id("channel"),
+            FabricBlockEntityTypeBuilder.create(ChannelBlockEntity::new, CHANNEL).build());
+    public static final BlockEntityType<ReceiverBlockEntity> RECEIVER_BLOCK_ENTITY = Registry.register(
+            BuiltInRegistries.BLOCK_ENTITY_TYPE, id("receiver"),
+            FabricBlockEntityTypeBuilder.create(ReceiverBlockEntity::new, RECEIVER).build());
+
+    /** The setting of a portable radio; changing it must not replay the hand's equip animation (volume slider). */
+    public static final DataComponentType<Tuning> TUNING = Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE,
+            id("tuning"), DataComponentType.<Tuning>builder().persistent(Tuning.CODEC)
+                    .networkSynchronized(Tuning.STREAM_CODEC).ignoreSwapAnimation().build());
 
     public static final Item RADIO_ITEM = registerItem("radio", props -> new BlockItem(RADIO, props.useBlockDescriptionPrefix()));
     public static final Item AMPLIFIER_ITEM = registerItem("amplifier", props -> new BlockItem(AMPLIFIER, props.useBlockDescriptionPrefix()));
+    public static final Item CHANNEL_ITEM = registerItem("channel", props -> new BlockItem(CHANNEL, props.useBlockDescriptionPrefix()));
+    public static final Item RECEIVER_ITEM = registerItem("receiver", props -> new BlockItem(RECEIVER, props.useBlockDescriptionPrefix()));
+    public static final Item SPEAKER_ITEM = registerItem("speaker", props -> new BlockItem(SPEAKER, props.useBlockDescriptionPrefix()));
+    public static final Item PORTABLE_RADIO_ITEM = registerItem("portable_radio", props -> new PortableRadioItem(props.stacksTo(1)));
 
     /** The mod's own creative tab; the items are not listed anywhere else. */
     public static final CreativeModeTab TAB = Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, id("main"),
             FabricCreativeModeTab.builder()
-                    .icon(() -> new ItemStack(RADIO_ITEM))
+                    .icon(() -> new ItemStack(RECEIVER_ITEM))
                     .title(Component.translatable("itemGroup.worldradio"))
                     .displayItems((params, output) -> {
                         output.accept(RADIO_ITEM);
+                        output.accept(CHANNEL_ITEM);
                         output.accept(AMPLIFIER_ITEM);
+                        output.accept(RECEIVER_ITEM);
+                        output.accept(SPEAKER_ITEM);
+                        output.accept(PORTABLE_RADIO_ITEM);
                     })
                     .build());
 
@@ -95,7 +132,7 @@ public class WorldRadio implements ModInitializer {
         ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) ->
                 RadioNetwork.get((net.minecraft.server.level.ServerLevel) newPlayer.level()).sendTo(newPlayer));
         CommandRegistrationCallback.EVENT.register((dispatcher, registries, selection) -> RadioCommand.register(dispatcher));
-        // Sneak + right-click on a radio switches it on or off. Vanilla skips block interaction while sneaking as soon
+        // Sneak + right-click on a transmitter, channel or radio switches it on or off. Vanilla skips block interaction while sneaking as soon
         // as either hand holds something (a shield or totem in the offhand was enough to break the switch on servers),
         // so the switch is taken here, before that gate; the main hand must be empty so held blocks still get placed.
         UseBlockCallback.EVENT.register((player, level, hand, hit) -> {

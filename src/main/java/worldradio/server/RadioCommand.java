@@ -15,15 +15,18 @@ import net.minecraft.server.permissions.Permission;
 import net.minecraft.server.permissions.PermissionLevel;
 import net.minecraft.world.level.block.state.BlockState;
 import worldradio.block.AmplifierBlockEntity;
+import worldradio.block.ChannelBlockEntity;
 import worldradio.block.RadioBlockEntity;
+import worldradio.block.ReceiverBlockEntity;
 import worldradio.block.SignalBlock;
 import worldradio.net.Packets;
+import worldradio.server.NetworkData.Kind;
 import worldradio.signal.Signal;
 
 /**
- * {@code /worldradio tune <pos> <url> [name]}, {@code /worldradio enable <pos> <true|false>},
- * {@code /worldradio volume <pos> <0-100>} and {@code /worldradio status <pos>} for admins and the test scripts;
- * players normally use the station screen.
+ * {@code /worldradio tune <pos> <url> [name]} and {@code /worldradio enable <pos> <true|false>} for transmitters,
+ * channels and radios, {@code /worldradio volume <pos> <0-100>} for radios, and
+ * {@code /worldradio status <pos>} for admins and the test scripts; players normally use the screens.
  */
 public final class RadioCommand {
     private RadioCommand() {
@@ -56,8 +59,8 @@ public final class RadioCommand {
         ServerLevel level = ctx.getSource().getLevel();
         BlockPos pos = BlockPosArgument.getLoadedBlockPos(ctx, "pos");
         int percent = IntegerArgumentType.getInteger(ctx, "percent");
-        if (!(level.getBlockEntity(pos) instanceof RadioBlockEntity radio)) {
-            ctx.getSource().sendFailure(Component.literal("No radio at " + pos.toShortString()));
+        if (!(level.getBlockEntity(pos) instanceof ReceiverBlockEntity radio)) {
+            ctx.getSource().sendFailure(Component.literal("No receiving radio at " + pos.toShortString()));
             return 0;
         }
         radio.setVolume(percent / 100.0f);
@@ -102,29 +105,49 @@ public final class RadioCommand {
         ServerLevel level = ctx.getSource().getLevel();
         BlockPos pos = BlockPosArgument.getLoadedBlockPos(ctx, "pos");
         StringBuilder out = new StringBuilder();
-        if (level.getBlockEntity(pos) instanceof RadioBlockEntity radio) {
-            out.append("radio range=").append(radio.range()).append(" antenna=").append(radio.antenna())
+        if (level.getBlockEntity(pos) instanceof ReceiverBlockEntity radio) {
+            out.append("receiver hearing=").append(radio.range()).append(" speakers=").append(radio.antenna())
                     .append(" level=").append(level(radio.getBlockState())).append(" enabled=").append(radio.enabled())
                     .append(" volume=").append(Math.round(radio.volume() * 100))
+                    .append(" plays=").append(radio.plays())
+                    .append(" url=").append(radio.url())
+                    .append(" name=").append(radio.name())
+                    .append(" signals=").append(radio.signals().size());
+            signals(out, radio.signals());
+        } else if (level.getBlockEntity(pos) instanceof ChannelBlockEntity channel) {
+            out.append("channel level=").append(level(channel.getBlockState())).append(" enabled=").append(channel.enabled())
+                    .append(" transmitter=").append(channel.range() > 0 ? "range " + channel.range() : "none")
+                    .append(" url=").append(channel.url())
+                    .append(" name=").append(channel.name());
+        } else if (level.getBlockEntity(pos) instanceof RadioBlockEntity radio) {
+            out.append("radio range=").append(radio.range()).append(" antenna=").append(radio.antenna())
+                    .append(" level=").append(level(radio.getBlockState())).append(" enabled=").append(radio.enabled())
                     .append(" url=").append(radio.url())
                     .append(" name=").append(radio.name());
         } else if (level.getBlockEntity(pos) instanceof AmplifierBlockEntity amp) {
             out.append("amplifier range=").append(amp.range()).append(" antenna=").append(amp.antenna())
                     .append(" level=").append(level(amp.getBlockState())).append(" signals=").append(amp.signals().size());
-            for (Signal s : amp.signals()) {
-                out.append(" | ").append(s.url()).append(" from ").append(s.radioX()).append(',').append(s.radioY())
-                        .append(',').append(s.radioZ()).append(" hops=").append(s.hops())
-                        .append(String.format(java.util.Locale.ROOT, " dist=%.1f factor=%.2f", s.distance(), s.factor()));
-            }
+            signals(out, amp.signals());
         } else {
             out.append("nothing at ").append(pos.toShortString());
         }
         RadioNetwork network = RadioNetwork.get(level);
-        out.append(" (network: ").append(network.radioCount()).append(" radios, ").append(network.amplifierCount())
-                .append(" amplifiers)");
+        out.append(" (network: ").append(network.count(Kind.TRANSMITTER)).append(" radios, ")
+                .append(network.count(Kind.CHANNEL)).append(" channels, ")
+                .append(network.count(Kind.AMPLIFIER)).append(" amplifiers, ")
+                .append(network.count(Kind.RECEIVER)).append(" receivers, ")
+                .append(network.playingCount()).append(" playing)");
         String text = out.toString();
         ctx.getSource().sendSuccess(() -> Component.literal(text), false);
         return 1;
+    }
+
+    private static void signals(StringBuilder out, java.util.List<Signal> signals) {
+        for (Signal s : signals) {
+            out.append(" | ").append(s.url()).append(" from ").append(s.radioX()).append(',').append(s.radioY())
+                    .append(',').append(s.radioZ()).append(" hops=").append(s.hops())
+                    .append(String.format(java.util.Locale.ROOT, " dist=%.1f", s.distance()));
+        }
     }
 
     private static int level(BlockState state) {

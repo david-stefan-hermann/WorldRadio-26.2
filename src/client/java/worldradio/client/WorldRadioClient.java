@@ -9,7 +9,10 @@ import net.minecraft.client.Minecraft;
 import worldradio.WorldRadio;
 import worldradio.block.AmplifierBlockEntity;
 import worldradio.block.RadioBlockEntity;
+import worldradio.block.ReceiverBlockEntity;
 import worldradio.block.SignalBlock;
+import worldradio.client.screen.TunerScreen;
+import worldradio.item.PortableRadioItem;
 import worldradio.client.audio.RadioSoundInstance;
 import worldradio.client.audio.SourceTracker;
 import worldradio.client.audio.StationStream;
@@ -28,9 +31,11 @@ public class WorldRadioClient implements ClientModInitializer {
         StationStream.log = WorldRadio.LOGGER::info;
         SignalBlock.screenOpener = (level, pos) -> {
             Minecraft minecraft = Minecraft.getInstance();
-            if (level.getBlockEntity(pos) instanceof RadioBlockEntity) minecraft.gui.setScreen(new RadioScreen(pos));
+            if (level.getBlockEntity(pos) instanceof ReceiverBlockEntity) minecraft.gui.setScreen(new TunerScreen(pos));
+            else if (level.getBlockEntity(pos) instanceof RadioBlockEntity) minecraft.gui.setScreen(new RadioScreen(pos));
             else if (level.getBlockEntity(pos) instanceof AmplifierBlockEntity) minecraft.gui.setScreen(new AmplifierScreen(pos));
         };
+        PortableRadioItem.screenOpener = hand -> Minecraft.getInstance().gui.setScreen(new TunerScreen(hand));
         FavouritesCache.load();
         ClientPlayNetworking.registerGlobalReceiver(Packets.FavouritesSync.TYPE,
                 (payload, context) -> FavouritesCache.importLegacy(payload.favourites()));

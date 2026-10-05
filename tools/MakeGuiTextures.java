@@ -25,9 +25,12 @@ import java.util.zip.ZipFile;
  * <p>For each theme it writes the panel backgrounds and nine-slice button sprites (200x20, border 3) to
  * art/gui/&lt;theme&gt;/, and a preview: the textures with the real layout, text in the Minecraft font (read from the
  * loom client jar) at GUI scale 3 on top of a dev-client screenshot, to art/gui/preview/.
- * The chosen theme (TEAK, 2026-09-26) also goes into the mod: the two panels to assets/worldradio/textures/gui/ and
- * the keys as nine-slice GUI sprites (worldradio:key, key_highlighted, key_disabled).
- * Run: java tools/MakeGuiTextures.java (from the project folder).
+ * The chosen theme (TEAK, 2026-09-26) also goes into the mod: the panels to assets/worldradio/textures/gui/ and
+ * the keys as nine-slice GUI sprites (worldradio:key, key_highlighted, key_disabled). Since 2.0 only the radio's
+ * tuner keeps the teak; the transmitter and amplifier panels are the same design in the colours of their blocks
+ * ({@link Skin}), shown in art/gui/preview/blocks-2.0.png.
+ * Run: java tools/MakeGuiTextures.java (from the project folder); with the argument "themes" it also writes the
+ * theme round of 2026-09-26 again.
  */
 public class MakeGuiTextures {
     static final Path OUT = Path.of("art/gui");
@@ -39,6 +42,7 @@ public class MakeGuiTextures {
     static final int AW = 330, AH = 190, A_HEADER = 34;
     static final int[] R_LIST = {8, 78, 324, 128};
     static final int[] A_LIST = {8, 40, 314, 142};
+    static final int[] T_LIST = {8, 40, 314, 118};
     static final int ROW = 12;
 
     /** Text colours of a theme. */
@@ -65,6 +69,9 @@ public class MakeGuiTextures {
         BufferedImage radioBack = ImageIO.read(new File("run/screenshots/favourites-b.png"));
         BufferedImage ampBack = ImageIO.read(new File("run/screenshots/amplifier-screen-b.png"));
         Files.createDirectories(OUT.resolve("preview"));
+        install(new Teak());
+        blockPreview(new Teak(), font);
+        if (args.length == 0) return;
         List<BufferedImage> amps = new ArrayList<>();
         for (Theme theme : new Theme[]{new Walnut(), new Classic(), new HiFi(), new Amber(), new Teak(), new Mahogany()}) {
             Path dir = OUT.resolve(theme.name());
@@ -90,15 +97,36 @@ public class MakeGuiTextures {
         // the amplifier screens side by side at half size: the first three themes, then the walnut variations
         overview(amps.subList(0, 3), OUT.resolve("preview/amplifiers.png"));
         overview(amps.subList(3, 6), OUT.resolve("preview/walnut-variants-amplifiers.png"));
-        install(new Teak());
+    }
+
+    /** The three installed panels with mock content, 2x, side by side: transmitter and channel, amplifier, radio. */
+    static void blockPreview(Theme theme, Font font) throws IOException {
+        BufferedImage[] buttons = {theme.button(0), theme.button(1), theme.button(2)};
+        BufferedImage[] shots = {
+                radioMock(theme, TRANSMITTER.panel(RW, RH, R_HEADER, R_LIST), buttons, font),
+                ampMock(theme, AMPLIFIER.panel(AW, AH, A_HEADER, A_LIST), font),
+                ampMock(theme, TEAK.panel(AW, AH, A_HEADER, T_LIST), font)};
+        BufferedImage sheet = new BufferedImage(2 * (RW + 2 * AW + 40), 2 * (RH + 20), BufferedImage.TYPE_INT_RGB);
+        java.awt.Graphics2D g = sheet.createGraphics();
+        g.setColor(new java.awt.Color(0x6E7F6E));
+        g.fillRect(0, 0, sheet.getWidth(), sheet.getHeight());
+        int x = 10;
+        for (BufferedImage shot : shots) {
+            g.drawImage(shot, 2 * x, 20, 2 * shot.getWidth(), 2 * shot.getHeight(), null);
+            x += shot.getWidth() + 10;
+        }
+        g.dispose();
+        write(sheet, OUT.resolve("preview/blocks-2.0.png"));
     }
 
     /** Writes a theme's panels and keys into the mod's resources. */
     static void install(Theme theme) throws IOException {
         Path gui = Path.of("src/main/resources/assets/worldradio/textures/gui");
         Files.createDirectories(gui.resolve("sprites"));
-        write(theme.panel(RW, RH, R_HEADER, R_LIST, true), gui.resolve("radio.png"));
-        write(theme.panel(AW, AH, A_HEADER, A_LIST, false), gui.resolve("amplifier.png"));
+        write(TRANSMITTER.panel(RW, RH, R_HEADER, R_LIST), gui.resolve("radio.png"));
+        write(AMPLIFIER.panel(AW, AH, A_HEADER, A_LIST), gui.resolve("amplifier.png"));
+        // the tuner of the radio block and the portable radio: the amplifier's size with room for keys under the list
+        write(theme.panel(AW, AH, A_HEADER, T_LIST, false), gui.resolve("tuner.png"));
         String[] names = {"key", "key_highlighted", "key_disabled"};
         for (int s = 0; s < 3; s++) {
             write(theme.button(s), gui.resolve("sprites/" + names[s] + ".png"));
@@ -145,8 +173,8 @@ public class MakeGuiTextures {
         list(g, R_LIST, rows, 2, c, f);
         button(g, buttons[0], 8, RH - 24, 60, 18, "Clear", c, f, false);
         button(g, buttons[0], 72, RH - 24, 70, 18, "Turn off", c, f, false);
-        f.draw(g, "Volume: Options → Music & Sounds →", 148, RH - 23, c.body(), c.bodyShadow());
-        f.draw(g, "Radio", 148, RH - 14, c.body(), c.bodyShadow());
+        f.draw(g, "Sends a signal only. Listen with a", 148, RH - 23, c.body(), c.bodyShadow());
+        f.draw(g, "Radio or a Portable Radio in range.", 148, RH - 14, c.body(), c.bodyShadow());
         return g;
     }
 
@@ -157,8 +185,8 @@ public class MakeGuiTextures {
         f.draw(g, "Range 128 blocks (3 antenna blocks)  (?)", 8, 20, c.soft(), false);
         String count = "2 signals";
         f.draw(g, count, AW - 8 - f.width(count), 8, c.soft(), false);
-        String[][] rows = {{"Kiss FM", "0, -60, 0 · 20 m · hops: 1 · 50 %"},
-                {"Radio Dismuke", "40, -60, 0 · 20 m · hops: 1 · 50 %"}};
+        String[][] rows = {{"Kiss FM", "0, -60, 0 · 20 m · hops: 1"},
+                {"Radio Dismuke", "40, -60, 0 · 20 m · hops: 1"}};
         list(g, A_LIST, rows, 1, c, f);
         return g;
     }
@@ -398,18 +426,57 @@ public class MakeGuiTextures {
 
     /** The walnut case of all three variations: wood, bevel, a metal rim around the dial and the list. */
     static BufferedImage walnutCase(int w, int h, int header, int[] list, int wood, double grain, int rim, int rimDark) {
+        return walnutCase(w, h, header, list, wood, grain, rim, rimDark, false);
+    }
+
+    /** metal = the same case as brushed steel: the grain keeps the hue instead of running warm, the outlines are neutral. */
+    static BufferedImage walnutCase(int w, int h, int header, int[] list, int wood, double grain, int rim, int rimDark,
+                                    boolean metal) {
         BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-        wood(img, 0, 0, w, h, 7, false, wood, grain);
-        bevelFrame(img, 0, 0, w, h, 0x160C05, mix(wood, 0xFFFFFF, 0.25), mix(wood, 0x000000, 0.45));
+        wood(img, 0, 0, w, h, 7, false, wood, grain, metal);
+        bevelFrame(img, 0, 0, w, h, metal ? 0x0C0D10 : 0x160C05, mix(wood, 0xFFFFFF, 0.25), mix(wood, 0x000000, 0.45));
         rect(img, 4, 3, w - 5, header, rimDark);
         outline(img, 4, 3, w - 5, header, rim);
         int lx = list[0], ly = list[1], lw = list[2], lh = list[3];
         outline(img, lx - 2, ly - 2, lx + lw + 1, ly + lh + 1, rim);
         hLine(img, lx - 2, lx + lw + 1, ly + lh + 1, rimDark);
         vLine(img, lx + lw + 1, ly - 2, ly + lh + 1, rimDark);
-        outline(img, lx - 1, ly - 1, lx + lw, ly + lh, 0x0E0804);
+        outline(img, lx - 1, ly - 1, lx + lw, ly + lh, metal ? 0x08090B : 0x0E0804);
         return img;
     }
+
+    /**
+     * The picked teak design in the colours of a block: the case, the rims, the dial glass (top to bottom, the glint
+     * on its upper edge, the line above the scale), the scale strokes and the two ribs of the cloth behind the list.
+     */
+    record Skin(int body, double grain, boolean metal, int rim, int rimDark, int glassTop, int glassBottom, int glint,
+                int line, int scaleSmall, int scaleLarge, int clothA, int clothB) {
+        BufferedImage panel(int w, int h, int header, int[] list) {
+            BufferedImage img = walnutCase(w, h, header, list, body, grain, rim, rimDark, metal);
+            int dx0 = 5, dy0 = 4, dx1 = w - 6, dy1 = header - 1;
+            for (int y = dy0; y <= dy1; y++) {
+                int c = mix(glassTop, glassBottom, (y - dy0) / (double) (dy1 - dy0));
+                for (int x = dx0; x <= dx1; x++) set(img, x, y, c);
+            }
+            hLine(img, dx0, dx1, dy0, glint);
+            hLine(img, dx0, dx1, dy1 - 5, line);
+            scale(img, dx0, dx1, dy1, scaleSmall, scaleLarge, 0xD02A1A, Integer.MAX_VALUE);
+            for (int y = list[1]; y < list[1] + list[3]; y++) {
+                for (int x = list[0]; x < list[0] + list[2]; x++) set(img, x, y, x % 2 == 0 ? clothA : clothB);
+            }
+            return img;
+        }
+    }
+
+    /** Teak, black glass with a gold scale, ribbed 1960s speaker cloth: the radio. */
+    static final Skin TEAK = new Skin(0x8A5A32, 13, false, 0xC8A050, 0x6A4A1E, 0x2A2826, 0x0C0B0A, 0x4A4744,
+            0x5A4620, 0x8A6A30, 0xC8A050, 0x2A2019, 0x1E1712);
+    /** The transmitter's and the channel's dark steel with their orange light (MakeTextures.RADIO). */
+    static final Skin TRANSMITTER = new Skin(0x4A4F57, 4, true, 0x9AA0A8, 0x34383E, 0x26262B, 0x0E0E12, 0x44464C,
+            0x8A4A14, 0x8A4A14, 0xFB923C, 0x1F1F24, 0x161619);
+    /** The amplifier's light steel with its blue panel (MakeTextures.AMPLIFIER). */
+    static final Skin AMPLIFIER = new Skin(0x8A8F96, 5, true, 0x4D5E80, 0x2C3A58, 0x1E2A44, 0x0E1422, 0x2C3A58,
+            0x24466E, 0x3A6AA8, 0x60A5FA, 0x18223A, 0x101828);
 
     /** Scale strokes along the bottom of the dial (every 4 px, long ones every 20 px) and a short red pointer. */
     static void scale(BufferedImage img, int x0, int x1, int bottom, int small, int large, int pointer, int skipFrom) {
@@ -492,21 +559,7 @@ public class MakeGuiTextures {
         }
 
         public BufferedImage panel(int w, int h, int header, int[] list, boolean radio) {
-            BufferedImage img = walnutCase(w, h, header, list, 0x8A5A32, 13, 0xC8A050, 0x6A4A1E);
-            // black glass dial with a soft reflection at the top and a gold scale
-            int dx0 = 5, dy0 = 4, dx1 = w - 6, dy1 = header - 1;
-            for (int y = dy0; y <= dy1; y++) {
-                int c = mix(0x2A2826, 0x0C0B0A, (y - dy0) / (double) (dy1 - dy0));
-                for (int x = dx0; x <= dx1; x++) set(img, x, y, c);
-            }
-            hLine(img, dx0, dx1, dy0, 0x4A4744);
-            hLine(img, dx0, dx1, dy1 - 5, 0x5A4620);
-            scale(img, dx0, dx1, dy1, 0x8A6A30, 0xC8A050, 0xD02A1A, Integer.MAX_VALUE);
-            // ribbed 1960s speaker cloth
-            for (int y = list[1]; y < list[1] + list[3]; y++) {
-                for (int x = list[0]; x < list[0] + list[2]; x++) set(img, x, y, x % 2 == 0 ? 0x2A2019 : 0x1E1712);
-            }
-            return img;
+            return TEAK.panel(w, h, header, list);
         }
 
         public BufferedImage button(int state) {
@@ -595,6 +648,12 @@ public class MakeGuiTextures {
     }
 
     static void wood(BufferedImage img, int x0, int y0, int w, int h, int seed, boolean vertical, int base, double depth) {
+        wood(img, x0, y0, w, h, seed, vertical, base, depth, false);
+    }
+
+    static void wood(BufferedImage img, int x0, int y0, int w, int h, int seed, boolean vertical, int base, double depth,
+                     boolean metal) {
+        double green = metal ? 1 : 0.7, blue = metal ? 1 : 0.45;
         Random rnd = new Random(seed);
         double phase = rnd.nextDouble() * 10;
         for (int y = y0; y < y0 + h; y++) {
@@ -602,8 +661,8 @@ public class MakeGuiTextures {
                 double a = vertical ? x : y, b = vertical ? y : x;
                 double grain = Math.sin(a * 0.9 + 2.2 * Math.sin(b * 0.035 + phase) + Math.sin(b * 0.11) * 0.6);
                 double v = grain * depth + rnd.nextGaussian() * 2.5;
-                int r = (int) Math.clamp(((base >> 16) & 255) + v, 0, 255), g = (int) Math.clamp(((base >> 8) & 255) + v * 0.7, 0, 255),
-                        bl = (int) Math.clamp((base & 255) + v * 0.45, 0, 255);
+                int r = (int) Math.clamp(((base >> 16) & 255) + v, 0, 255), g = (int) Math.clamp(((base >> 8) & 255) + v * green, 0, 255),
+                        bl = (int) Math.clamp((base & 255) + v * blue, 0, 255);
                 set(img, x, y, (r << 16) | (g << 8) | bl);
             }
         }

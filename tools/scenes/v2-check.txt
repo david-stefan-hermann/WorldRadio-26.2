@@ -1,0 +1,11 @@
+forceload add -48 -32 64 32
+time set noon
+weather clear
+kill @e[type=!minecraft:player]
+fill -40 -60 -4 130 -52 8 air
+setblock 0 -60 0 worldradio:radio[facing=south]
+worldradio tune 0 -60 0 "http://stream.kissfm.de/kissfm/mp3-128/internetradio/" Kiss FM
+setblock 6 -60 0 worldradio:radio[facing=south]
+worldradio tune 6 -60 0 "http://stream.srg-ssr.ch/m/rsj/aacp_96" Swiss Jazz AAC
+setblock 12 -60 0 worldradio:radio[facing=south]
+worldradio tune 12 -60 0 "http://no-such-host.invalid/stream.mp3" Dead Link

@@ -29,8 +29,8 @@ import worldradio.server.RadioNetwork;
 import worldradio.signal.Antenna;
 
 /**
- * Radio and amplifier share this: a facing, a display level 0..3 that the server sets from the station/signals and the
- * antenna column on top (see {@link Antenna#level}), and right-click to open the block's screen (on the client, see
+ * Transmitter, channel, amplifier and radio share this: a facing, a display level 0..3 that the server sets (from the
+ * station/signals and the antenna column on top, see {@link Antenna#level}), and right-click to open the block's screen (on the client, see
  * {@link #screenOpener}), with or without an item in hand.
  */
 public abstract class SignalBlock extends BaseEntityBlock {
@@ -85,11 +85,16 @@ public abstract class SignalBlock extends BaseEntityBlock {
     @Override
     protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player,
                                           InteractionHand hand, BlockHitResult hit) {
-        if (hit.getDirection() == Direction.UP && stack.getItem() instanceof BlockItem item
+        if (takesAntenna() && hit.getDirection() == Direction.UP && stack.getItem() instanceof BlockItem item
                 && isAntenna(item.getBlock().defaultBlockState())) {
             return InteractionResult.PASS;
         }
         return InteractionResult.TRY_WITH_EMPTY_HAND;
+    }
+
+    /** Whether antenna blocks stacked on top count (transmitter and amplifier). */
+    protected boolean takesAntenna() {
+        return true;
     }
 
     @Override

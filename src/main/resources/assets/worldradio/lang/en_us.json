@@ -1,6 +1,10 @@
 {
-  "block.worldradio.radio": "Radio",
+  "block.worldradio.radio": "Radio Transmitter",
   "block.worldradio.amplifier": "Radio Amplifier",
+  "block.worldradio.channel": "Radio Channel",
+  "block.worldradio.receiver": "Radio",
+  "block.worldradio.speaker": "Speaker",
+  "item.worldradio.portable_radio": "Portable Radio",
   "soundCategory.radio": "Radio",
   "itemGroup.worldradio": "World Radio",
 
@@ -18,18 +22,21 @@
 
   "worldradio.station.none": "No station",
   "worldradio.station.clear": "Clear",
-  "worldradio.station.clear.tooltip": "Clear the station: the radio stays silent until you tune it again",
+  "worldradio.station.clear.tooltip": "Clear the station: nothing is sent from here until you tune it again",
   "worldradio.station.off": "Turn off",
   "worldradio.station.on": "Turn on",
-  "worldradio.toggle.on": "Radio on",
-  "worldradio.toggle.off": "Radio off",
+  "worldradio.toggle.on": "Switched on",
+  "worldradio.toggle.off": "Switched off",
   "worldradio.status.tune": "Pick a station below",
-  "worldradio.status.disabled": "Off – press Turn on or sneak + right-click the radio",
-  "worldradio.status.idle": "Not playing here (too far away?)",
+  "worldradio.status.disabled": "Off – press Turn on or sneak + right-click",
+  "worldradio.status.idle": "Not playing here",
+  "worldradio.status.sending": "On air",
+  "worldradio.status.nosignal": "No signal for this station here",
   "worldradio.status.connecting": "Connecting…",
   "worldradio.status.playing": "Playing",
   "worldradio.status.retrying": "No connection (%s), retrying…",
   "worldradio.status.unsupported": "Cannot play this stream: %s",
+  "worldradio.transmitter.hint": "Sends a signal only. Listen with a Radio or a Portable Radio in range.",
 
   "worldradio.favorite.add": "Add to your favorites",
   "worldradio.favorite.remove": "Remove from your favorites",
@@ -46,14 +53,25 @@
   "worldradio.browse.mp3_only": "Lists MP3 stations only",
 
   "worldradio.url.label": "Stream address (MP3, .m3u or .pls)",
-  "worldradio.url.play": "Play",
+  "worldradio.url.play": "Send",
   "worldradio.url.invalid": "That is not an http(s) address.",
   "worldradio.url.hint": "Any internet radio that streams MP3 works, e.g. http://stream.kissfm.de/kissfm/mp3-128/internetradio/. AAC, Ogg and HLS streams are not supported.",
 
   "worldradio.volume": "Volume: %s%%",
   "worldradio.volume.tooltip": "Volume of this radio for everyone who hears it. Your own radio volume: Options → Music & Sounds → Radio",
+  "worldradio.volume.tooltip.portable": "Volume of this portable radio; only you hear it. Your overall radio volume: Options → Music & Sounds → Radio",
+  "worldradio.hearing": "Heard for %s blocks (%s speakers)",
+  "worldradio.hearing.one": "Heard for %s blocks (1 speaker)",
+  "worldradio.hearing.hint": "Put Speakers against the radio, or against a speaker that is already connected, to be heard further (+%s blocks each). The sound gets quieter with distance and fades out just past this range.",
+  "worldradio.channel.host": "Sends over its transmitter (range %s blocks)",
+  "worldradio.channel.nohost": "Not connected to a Radio Transmitter",
+  "worldradio.channel.hint": "One more station for a Radio Transmitter. Put it against one, or against a channel of one.",
+
+  "worldradio.tuner.count": "Stations: %s",
+  "worldradio.tuner.none": "No station reaches this place. Go closer to a Radio Transmitter or an amplifier, or build one and tune it to a station.",
+  "worldradio.tuner.row": "%s m · hops: %s",
 
   "worldradio.amplifier.count": "%s signals",
   "worldradio.amplifier.none": "No radio signal reaches this amplifier.",
-  "worldradio.amplifier.row": "%s, %s, %s · %s m · hops: %s · %s %%"
+  "worldradio.amplifier.row": "%s, %s, %s · %s m · hops: %s"
 }
