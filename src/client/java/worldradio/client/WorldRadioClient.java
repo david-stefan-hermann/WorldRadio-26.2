@@ -6,6 +6,8 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
+import net.minecraft.resources.Identifier;
+import worldradio.client.mixin.ConditionalItemModelPropertiesAccessor;
 import worldradio.WorldRadio;
 import worldradio.block.AmplifierBlockEntity;
 import worldradio.block.RadioBlockEntity;
@@ -31,6 +33,8 @@ public class WorldRadioClient implements ClientModInitializer {
                 .map(c -> c.getMetadata().getVersion().getFriendlyString()).orElse("dev");
         StationStream.userAgent = "WorldRadio/" + version + " (BaconCakeFactory)";
         StationStream.log = WorldRadio.LOGGER::info;
+        ConditionalItemModelPropertiesAccessor.worldradio$idMapper().put(
+                Identifier.fromNamespaceAndPath(WorldRadio.MOD_ID, "portable_radio_on"), PortableRadioOn.MAP_CODEC);
         SignalBlock.screenOpener = (level, pos) -> {
             Minecraft minecraft = Minecraft.getInstance();
             if (level.getBlockEntity(pos) instanceof ReceiverBlockEntity) minecraft.gui.setScreen(new TunerScreen(pos));

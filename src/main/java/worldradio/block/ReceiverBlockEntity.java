@@ -28,12 +28,7 @@ public class ReceiverBlockEntity extends RadioBlockEntity {
 
     public ReceiverBlockEntity(BlockPos pos, BlockState state) {
         super(WorldRadio.RECEIVER_BLOCK_ENTITY, pos, state);
-        setRange(hearing(0), 0);
-    }
-
-    /** How far it is heard with that many speakers: a portable radio that is put down starts further out. */
-    public int hearing(int speakers) {
-        return getBlockState().is(WorldRadio.PORTABLE_RADIO) ? Config.portableHearing(speakers) : Config.hearing(speakers);
+        setRange(Config.hearing(0), 0);
     }
 
     public List<Signal> signals() {

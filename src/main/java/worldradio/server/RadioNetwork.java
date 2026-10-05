@@ -133,16 +133,19 @@ public final class RadioNetwork {
 
     /**
      * Speakers connected to the radio at {@code pos}: those touching it and, from speaker to touching speaker, the
-     * whole chain. Takes loaded blocks only and stops at the number that still adds hearing range.
+     * whole chain. A portable radio that is put down connects to the speaker it stands on only, the chain goes on from
+     * there. Takes loaded blocks only and stops at the number that still adds hearing range.
      */
     public Set<BlockPos> speakers(BlockPos pos) {
         int cap = Config.maxSpeakers();
+        boolean portable = level.isLoaded(pos) && level.getBlockState(pos).is(WorldRadio.PORTABLE_RADIO);
         Set<BlockPos> speakers = new HashSet<>();
         ArrayDeque<BlockPos> queue = new ArrayDeque<>();
         queue.add(pos);
         while (!queue.isEmpty() && speakers.size() < cap) {
             BlockPos at = queue.poll();
             for (Direction side : Direction.values()) {
+                if (portable && at.equals(pos) && side != Direction.DOWN) continue;
                 BlockPos next = at.relative(side);
                 if (speakers.size() < cap && level.isLoaded(next) && level.getBlockState(next).is(WorldRadio.SPEAKER)
                         && speakers.add(next)) {
@@ -199,8 +202,7 @@ public final class RadioNetwork {
                     case RECEIVER -> {
                         Set<BlockPos> chain = speakers(pos);
                         chains.put(pos, chain);
-                        ReceiverBlockEntity radio = (ReceiverBlockEntity) be;
-                        radio.setRange(radio.hearing(chain.size()), chain.size());
+                        ((ReceiverBlockEntity) be).setRange(Config.hearing(chain.size()), chain.size());
                         yield nodeOf(be, 0, 0);
                     }
                     case CHANNEL -> now;
@@ -212,7 +214,7 @@ public final class RadioNetwork {
                 entities.put(pos, be);
             } else {
                 int range = switch (known.kind()) {
-                    case RECEIVER -> known.range(); // radio or portable radio: as worked out while it was loaded
+                    case RECEIVER -> Config.hearing(known.antenna());
                     case CHANNEL -> 0;
                     case TRANSMITTER, AMPLIFIER -> Config.range(known.antenna());
                 };

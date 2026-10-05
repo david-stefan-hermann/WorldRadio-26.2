@@ -122,7 +122,8 @@ public final class GuideBook {
                 new Chapter("block.worldradio.receiver", new ItemStack(WorldRadio.RECEIVER_ITEM), true, List.of(
                         new Text(key("receiver.text")), new Announcement(key("receiver.motto")),
                         crafting, recipe("receiver"), new Text(key("receiver.any")),
-                        turn, use, new Text(key("receiver.use"), config.hearingBase()), new Text(key("receiver.silent")))),
+                        turn, use, new Text(key("receiver.use"), config.hearingBase()), new Text(key("receiver.silent")),
+                        new Heading(key("heading.direction")), new Text(key("receiver.direction")))),
                 new Chapter("block.worldradio.speaker", new ItemStack(WorldRadio.SPEAKER_ITEM), true, List.of(
                         new Text(key("speaker.text"), config.speakerStep(), config.hearingMax()),
                         new Announcement(key("speaker.motto")),
@@ -131,9 +132,9 @@ public final class GuideBook {
                         use, new Text(key("speaker.use")))),
                 new Chapter("item.worldradio.portable_radio", new ItemStack(WorldRadio.PORTABLE_RADIO_ITEM), true, List.of(
                         new Text(key("portable.text")), new Announcement(key("portable.motto")),
-                        crafting, recipe("portable_radio"),
+                        crafting, recipe("portable_radio"), new Text(key("portable.item")),
                         turn, use, new Text(key("portable.use")),
-                        new Heading(key("heading.place")), new Text(key("portable.place"), config.portableHearing()))),
+                        new Heading(key("heading.place")), new Text(key("portable.place"), config.hearingBase()))),
                 new Chapter(key("range"), vanilla("lightning_rod"), false, List.of(
                         new Text(key("range.text"), config.baseRange(), config.antennaStep(), config.maxAntenna(),
                                 Config.range(config.maxAntenna())),

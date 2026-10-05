@@ -11,7 +11,6 @@ import worldradio.WorldRadio;
 import worldradio.item.PortableRadioItem;
 import worldradio.item.Tuning;
 import worldradio.net.Packets;
-import worldradio.signal.Panner;
 import worldradio.signal.Reception;
 import worldradio.signal.SourcePicker;
 import worldradio.signal.SourcePicker.Candidate;
@@ -86,12 +85,7 @@ public final class SourceTracker {
         Playing p = PLAYING.get(url);
         if (p == null) return "not playing";
         return "active=" + Minecraft.getInstance().getSoundManager().isActive(p.sound()) + " " + p.sound().streamStats()
-                + " category=" + p.sound().getSource().getName() + " " + p.sound().panStats();
-    }
-
-    public static String panOf(String url) {
-        Playing p = PLAYING.get(url);
-        return p == null ? "not playing" : p.sound().panStats();
+                + " category=" + p.sound().getSource().getName();
     }
 
     public static float volumeOf(String url) {
@@ -109,8 +103,6 @@ public final class SourceTracker {
             return;
         }
         Vec3 ear = minecraft.gameRenderer.mainCamera().position();
-        float yaw = minecraft.gameRenderer.mainCamera().yRot();
-        double share = Config.get().directionalShare();
         List<Candidate> candidates = new ArrayList<>();
         Map<String, Vec3> places = new HashMap<>();
         Packets.Sources list = sources;
@@ -153,17 +145,14 @@ public final class SourceTracker {
         for (Candidate c : chosen.values()) {
             Vec3 place = places.get(c.sourceId());
             Playing p = PLAYING.get(c.station());
-            double pan = Panner.pan(yaw, place.x - ear.x, place.z - ear.z);
-            float[] gains = Panner.gains(pan, share);
             if (p != null) {
-                p.sound().move(place);
+                p.sound().move(place, c.sourceId().equals(PORTABLE));
                 p.sound().setVolume((float) c.volume());
-                p.sound().setPan(pan, gains);
                 continue;
             }
             if (RETRY_AFTER.getOrDefault(c.station(), 0L) > ticks) continue;
-            RadioSoundInstance sound = new RadioSoundInstance(c.station(), place, (float) c.volume());
-            sound.setPan(pan, gains);
+            RadioSoundInstance sound = new RadioSoundInstance(c.station(), place, (float) c.volume(),
+                    c.sourceId().equals(PORTABLE));
             minecraft.getSoundManager().play(sound);
             PLAYING.put(c.station(), new Playing(sound, ticks));
             WorldRadio.LOGGER.info("Radio: playing {} from {}", c.station(), c.sourceId());

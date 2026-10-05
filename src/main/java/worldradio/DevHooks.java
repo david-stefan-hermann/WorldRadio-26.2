@@ -19,6 +19,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import worldradio.block.ReceiverBlockEntity;
 import worldradio.item.Tuning;
+import worldradio.server.RadioNetwork;
 
 import java.util.List;
 import java.util.Set;
@@ -97,8 +98,17 @@ public final class DevHooks {
         portableCheck("the block took the item's setting", level.getBlockEntity(at) instanceof ReceiverBlockEntity radio
                 && radio.url().equals(tuning.url()) && radio.name().equals(tuning.name()) && !radio.enabled()
                 && radio.volume() == tuning.volume());
-        portableCheck("it is heard for the portable radio's own range, " + Config.get().portableHearing() + " blocks",
-                level.getBlockEntity(at) instanceof ReceiverBlockEntity radio && radio.range() == Config.get().portableHearing());
+        portableCheck("it is heard as far as a radio, " + Config.hearing(0) + " blocks",
+                level.getBlockEntity(at) instanceof ReceiverBlockEntity radio && radio.range() == Config.hearing(0));
+        RadioNetwork network = RadioNetwork.get(level);
+        level.setBlockAndUpdate(at.east(), WorldRadio.SPEAKER.defaultBlockState());
+        level.setBlockAndUpdate(at.above(), WorldRadio.SPEAKER.defaultBlockState());
+        portableCheck("speakers beside and on top of it do not connect", network.speakers(at).isEmpty());
+        level.setBlockAndUpdate(ground, WorldRadio.SPEAKER.defaultBlockState());
+        level.setBlockAndUpdate(ground.east(), WorldRadio.SPEAKER.defaultBlockState());
+        portableCheck("the speaker it stands on connects, with the two chained to it",
+                network.speakers(at).equals(Set.of(ground, ground.east(), at.east())));
+        for (BlockPos speaker : List.of(at.east(), at.above(), ground.east())) level.removeBlock(speaker, false);
         portableCheck("a bare hand breaks it at once", level.getBlockState(at).getDestroySpeed(level, at) == 0);
         List<ItemStack> drops = Block.getDrops(level.getBlockState(at), level, at, level.getBlockEntity(at));
         portableCheck("broken, it drops one portable radio with that setting", drops.size() == 1

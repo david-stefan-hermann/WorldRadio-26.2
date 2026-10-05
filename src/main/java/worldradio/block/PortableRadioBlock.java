@@ -10,7 +10,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 /**
  * The portable radio put down (sneak + right-click with the item): a radio like the {@link ReceiverBlock} in a small
- * case, with the same tuner and speakers and a hearing range of its own ({@code Config.portableHearing}). It takes the
+ * case, with the same tuner and hearing range; of the speakers around it only the one it stands on connects (see
+ * {@code RadioNetwork.speakers}). It takes the
  * item's setting and gives it back when it is broken, which a bare hand does at once (see {@link ReceiverBlockEntity}).
  */
 public class PortableRadioBlock extends ReceiverBlock {

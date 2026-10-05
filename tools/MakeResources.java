@@ -47,8 +47,16 @@ public class MakeResources {
         write(ASSETS.resolve("items/portable_radio.json"), """
                 {
                   "model": {
-                    "type": "minecraft:model",
-                    "model": "worldradio:block/portable_radio_on"
+                    "type": "minecraft:condition",
+                    "property": "worldradio:portable_radio_on",
+                    "on_true": {
+                      "type": "minecraft:model",
+                      "model": "worldradio:block/portable_radio_on"
+                    },
+                    "on_false": {
+                      "type": "minecraft:model",
+                      "model": "worldradio:block/portable_radio"
+                    }
                   }
                 }
                 """);

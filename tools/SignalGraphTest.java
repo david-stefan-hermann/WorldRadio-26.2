@@ -1,5 +1,4 @@
 import worldradio.signal.Antenna;
-import worldradio.signal.Panner;
 import worldradio.signal.Reception;
 import worldradio.signal.Reception.Emitter;
 import worldradio.signal.Reception.Heard;
@@ -153,21 +152,6 @@ public class SignalGraphTest {
         for (int i = 0; i < 9; i++) many.add(c("s" + i, "r" + i, 0.1 * (i + 1)));
         p = picker.pick(many, 6);
         check("pick: at most 6 stations, loudest kept", p.size() == 6 && p.containsKey("s8") && !p.containsKey("s2"));
-
-        // panning: 30 % directional, 70 % at the player
-        float[] centre = Panner.gains(0, 0.3);
-        float[] leftPan = Panner.gains(-1, 0.3);
-        float[] rightPan = Panner.gains(1, 0.3);
-        check("pan 0: equal, 1.0 per channel", near(centre[0], centre[1]) && Math.abs(centre[0] - 1.0) < 1e-6);
-        check("pan -1: left > right, right >= 0.7 x centre", leftPan[0] > leftPan[1] && leftPan[1] >= 0.7 * centre[1] - 1e-6);
-        check("pan +1: mirrored", near(rightPan[0], leftPan[1]) && near(rightPan[1], leftPan[0]));
-        check("share 0: no direction at all", near(Panner.gains(-1, 0)[0], 1.0) && near(Panner.gains(-1, 0)[1], 1.0));
-        // facing south (yaw 0): east (+x) is on the left, west on the right, north (-z) straight behind
-        check("pan: east of a player facing south is left", near(Panner.pan(0, 10, 0), -1));
-        check("pan: west of a player facing south is right", near(Panner.pan(0, -10, 0), 1));
-        check("pan: facing north (yaw 180), east is right", near(Panner.pan(180, 10, 0), 1));
-        float[] behind = Panner.gains(Panner.pan(0, 0, -10), 0.3);
-        check("pan: straight behind sounds centred", near(Panner.pan(0, 0, -10), 0) && near(behind[0], behind[1]));
 
         System.out.println("SignalGraphTest: " + pass + " passed, " + fail + " failed");
         if (fail > 0) System.exit(1);

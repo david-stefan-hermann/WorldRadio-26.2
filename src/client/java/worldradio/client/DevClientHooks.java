@@ -322,10 +322,6 @@ public final class DevClientHooks {
                     stream == null ? 0 : stream.samplesOut(), SourceTracker.debug(e.getKey()),
                     stream == null ? "" : stream.title()));
         }
-        for (String url : SourceTracker.playing().keySet()) {
-            WorldRadio.LOGGER.info("Radio: {} yaw={} ({})", SourceTracker.panOf(url),
-                    String.format(Locale.ROOT, "%.0f", minecraft.gameRenderer.mainCamera().yRot()), url);
-        }
         var held = minecraft.player.getMainHandItem();
         if (held.getItem() instanceof worldradio.item.PortableRadioItem) {
             out.append(" held=").append(worldradio.item.PortableRadioItem.tuning(held));

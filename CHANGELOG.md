@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.1.1
+- A **Portable Radio** that is put down is heard as far as a Radio now: 4 blocks instead of 10 (the config entry `portableHearing` of 2.1.0 is gone).
+- Speakers make it heard further only when it **stands on top of one**; more speakers can be chained to that one as usual. Speakers beside or above it no longer count.
+- The guide book and the tuner's hint say so.
+- **Directional sound**: a Radio's sound now comes from the block itself, placed by the game's sound engine, and follows at once when you turn (before, 30 % of it was panned by the mod and lagged about a second behind). A Portable Radio you carry still plays in both ears alike. The config entry `directionalShare` is gone.
+- The Portable Radio **item shows whether it is on**: switched on and tuned, its lights are green and the antenna is pulled out; otherwise the light is red and the antenna is pushed in, as on the block.
+
 ## 2.1.0
 - New **World Radio Guide**: a guide book with a chapter for every block (what it does, its recipe, how to use it) and for range and antennas, finding stations and listening, with build pictures. English and German.
 - The **Portable Radio** is a small 3D transistor radio now, in the inventory and in the hand too, and it can be **put down**: sneak + right-click on a block. There it plays to everyone within 10 blocks like a Radio (same tuner, speakers add to it; new config entry `portableHearing`) and while it plays its lights are green and its antenna is pulled out; a bare hand breaks it at once to take it along again. Station, volume and on/off travel with it both ways. Sneak + right-click into the air still switches it.

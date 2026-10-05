@@ -10,6 +10,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import worldradio.Config;
+import worldradio.WorldRadio;
 import worldradio.block.ReceiverBlockEntity;
 import worldradio.client.audio.SourceTracker;
 import worldradio.item.PortableRadioItem;
@@ -219,7 +220,8 @@ public class TunerScreen extends net.minecraft.client.gui.screens.Screen {
                 int x = left + WIDTH - 8 - font.width(hearing);
                 g.text(font, hearing, x, top + 20, RadioUi.TEXT_SOFT, false);
                 if (mouseX >= x && mouseX < left + WIDTH - 8 && mouseY >= top + 18 && mouseY < top + 30) {
-                    Component hint = Component.translatable("worldradio.hearing.hint", Config.get().speakerStep());
+                    Component hint = Component.translatable(radio.getBlockState().is(WorldRadio.PORTABLE_RADIO)
+                            ? "worldradio.hearing.hint.portable" : "worldradio.hearing.hint", Config.get().speakerStep());
                     g.setTooltipForNextFrame(font, font.split(hint, 220), mouseX, mouseY + 16);
                 }
             }

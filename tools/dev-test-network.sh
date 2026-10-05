@@ -41,7 +41,7 @@ stop() {
 start
 
 check "old config loads, step 8 migrated to 32" "$(grep 'World Radio ready' run/runServer.out)" "range 32 \+ 32 per antenna block, up to 32 blocks"
-check "config written back with version, without ranges" "$(tr -d '\n ' < run/config/worldradio.json)" '^\{"configVersion":5,"baseRange":32,"antennaStep":32,"maxAntenna":32,"hearingBase":4,"speakerStep":4,"portableHearing":10,"hearingMax":64,"maxStations":6,"directionalShare":0.3\}$'
+check "config written back with version, without ranges" "$(tr -d '\n ' < run/config/worldradio.json)" '^\{"configVersion":5,"baseRange":32,"antennaStep":32,"maxAntenna":32,"hearingBase":4,"speakerStep":4,"hearingMax":64,"maxStations":6\}$'
 check "recipes and advancements parse" "$(grep -iE "couldn't parse|failed to parse|couldn't load|error.*worldradio" run/runServer.out | head -3)" '^$'
 
 # whatever the last run left (an older world still has power=... blocks there): information only
@@ -113,6 +113,17 @@ check "a long chain stops at hearingMax 64 (15 speakers)" "$(status '10 -60 2')"
 rcon "fill 11 -60 2 14 -40 2 air" "setblock 10 -59 2 air" > /dev/null
 sleep 3
 check "speakers gone: back to 4" "$(status '10 -60 2')" "receiver hearing=4 speakers=0 "
+# a portable radio that is put down: only the speaker it stands on connects, the chain goes on from that one
+rcon "setblock 10 -60 6 stone" "setblock 10 -59 6 worldradio:portable_radio" "setblock 11 -59 6 worldradio:speaker" "setblock 10 -58 6 worldradio:speaker" > /dev/null
+sleep 2
+check "portable radio: speakers beside and above do not count, hearing 4" "$(status '10 -59 6')" "receiver hearing=4 speakers=0 "
+rcon "setblock 10 -60 6 worldradio:speaker" > /dev/null
+sleep 2
+check "portable radio on a speaker: hearing 8" "$(status '10 -59 6')" "receiver hearing=8 speakers=1 "
+rcon "setblock 11 -60 6 worldradio:speaker" > /dev/null
+sleep 2
+check "chained to the speaker below (2 more, one of them beside the radio): hearing 16" "$(status '10 -59 6')" "receiver hearing=16 speakers=3 "
+rcon "fill 10 -60 6 11 -58 6 air" > /dev/null
 rcon "worldradio enable 10 -60 2 false" > /dev/null
 sleep 2
 check "radio switched off: silent, station kept" "$(status '10 -60 2')" "level=0 enabled=false volume=40 plays=false url=$KISS .*0 playing"

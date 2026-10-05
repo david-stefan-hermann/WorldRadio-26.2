@@ -13,8 +13,9 @@ import java.nio.file.Path;
 
 /**
  * {@code config/worldradio.json}. The range and hearing settings are read by the server (the blocks carry their range to
- * the clients), {@code maxStations} and {@code directionalShare} by the client. A file from 0.1/0.2 with a
- * {@code ranges} list still loads: Gson skips the unknown entry and the file is written back without it. A file from
+ * the clients), {@code maxStations} by the client. A file from 0.1/0.2 with a
+ * {@code ranges} list (or the {@code portableHearing} of 2.1.0, or a {@code directionalShare}) still loads: Gson skips the unknown entry and the file
+ * is written back without it. A file from
  * 0.3 (no {@code configVersion}) holds the old default {@code antennaStep} 8, which is raised to the new default.
  */
 public final class Config {
@@ -36,14 +37,10 @@ public final class Config {
         int hearingBase = 4;
         /** Blocks of hearing range each speaker connected to a radio adds. */
         int speakerStep = 4;
-        /** How far a portable radio that is put down can be heard without speakers, in blocks. */
-        int portableHearing = 10;
         /** The most speakers can raise a radio's hearing range to. */
         int hearingMax = 64;
         /** How many stations one client plays at the same time (vanilla has 8 streaming channels). */
         int maxStations = 6;
-        /** Share of the sound that comes from the station's direction (0 = all at the player, 1 = fully panned). */
-        double directionalShare = 0.3;
 
         public int baseRange() {
             return Math.max(1, baseRange);
@@ -61,20 +58,12 @@ public final class Config {
             return Math.max(1, hearingBase);
         }
 
-        public int portableHearing() {
-            return Math.max(1, portableHearing);
-        }
-
         public int speakerStep() {
             return Math.max(0, speakerStep);
         }
 
         public int hearingMax() {
             return Math.max(hearingBase(), hearingMax);
-        }
-
-        public double directionalShare() {
-            return Math.clamp(directionalShare, 0.0, 1.0);
         }
 
         public int maxStations() {
@@ -97,12 +86,6 @@ public final class Config {
     /** A radio's hearing range in blocks with {@code speakers} speakers connected to it. */
     public static int hearing(int speakers) {
         return (int) Math.min(values.hearingMax(), values.hearingBase() + (long) Math.max(speakers, 0) * values.speakerStep());
-    }
-
-    /** The same for a portable radio that is put down: it starts further out, speakers add as much. */
-    public static int portableHearing(int speakers) {
-        int base = values.portableHearing();
-        return (int) Math.min(Math.max(values.hearingMax(), base), base + (long) Math.max(speakers, 0) * values.speakerStep());
     }
 
     /** Speakers past this many add nothing to a radio. */

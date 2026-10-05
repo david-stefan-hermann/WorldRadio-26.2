@@ -64,6 +64,7 @@
   "worldradio.hearing": "Heard for %s blocks (%s speakers)",
   "worldradio.hearing.one": "Heard for %s blocks (1 speaker)",
   "worldradio.hearing.hint": "Put Speakers against the radio, or against a speaker that is already connected, to be heard further (+%s blocks each). The sound gets quieter with distance and fades out just past this range.",
+  "worldradio.hearing.hint.portable": "Stand the portable radio on top of a Speaker to be heard further (+%s blocks); more speakers can be chained to that one. The sound gets quieter with distance and fades out just past this range.",
   "worldradio.channel.host": "Sends over its transmitter (range %s blocks)",
   "worldradio.channel.nohost": "Not connected to a Radio Transmitter",
   "worldradio.channel.hint": "One more station for a Radio Transmitter. Put it against one, or against a channel of one.",
@@ -105,6 +106,8 @@
   "worldradio.book.receiver.motto": "\"Good evening, dear listeners.\"",
   "worldradio.book.receiver.any": "Any planks will do.",
   "worldradio.book.receiver.use": "Right-click: choose a station and set the volume. Sneak + right-click with an empty hand: on or off. It is heard for %s blocks, and Speakers carry it further.",
+  "worldradio.book.heading.direction": "Direction",
+  "worldradio.book.receiver.direction": "The sound comes from the block: turn around and it stays where the radio is. A Portable Radio you carry plays in both ears alike.",
   "worldradio.book.receiver.silent": "Silent? It plays only while it is switched on, tuned, and the signal of its station reaches it.",
 
   "worldradio.book.speaker.text": "Makes a radio heard further: every speaker adds %1$s blocks, up to %2$s.",
@@ -114,9 +117,10 @@
 
   "worldradio.book.portable.text": "A radio to carry. It plays to you alone while it is anywhere in your inventory, as long as the signal of its station reaches you.",
   "worldradio.book.portable.motto": "\"Music wherever you go.\"",
+  "worldradio.book.portable.item": "Switched on and tuned, the item shows green lights and its antenna.",
   "worldradio.book.portable.use": "Right-click: the tuner, with stations and volume. Sneak + right-click into the air: on or off. Of several in the inventory, the first one that is switched on plays.",
   "worldradio.book.heading.place": "Putting it down",
-  "worldradio.book.portable.place": "Sneak + right-click on a block puts it down. There it plays to everyone within %s blocks like a Radio, further with Speakers. A bare hand breaks it at once to take it along again: it keeps its station.",
+  "worldradio.book.portable.place": "Sneak + right-click on a block puts it down. There it plays to everyone within %s blocks like a Radio. Standing on top of a Speaker it is heard further, and more speakers can be chained to that one. A bare hand breaks it at once to take it along again: it keeps its station.",
 
   "worldradio.book.range": "Range & Antennas",
   "worldradio.book.range.text": "A transmitter reaches %1$s blocks. Every antenna block stacked straight on top of it adds %2$s more, up to %3$s antenna blocks (%4$s blocks).",

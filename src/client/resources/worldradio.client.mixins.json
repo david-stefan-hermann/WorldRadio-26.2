@@ -4,7 +4,10 @@
   "package": "worldradio.client.mixin",
   "compatibilityLevel": "JAVA_21",
   "client": [
+    "ConditionalItemModelPropertiesAccessor",
     "SoundBufferLibraryMixin",
+    "SoundEngineAccessor",
+    "SoundManagerAccessor",
     "SoundSourceMixin"
   ],
   "injectors": {

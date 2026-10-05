@@ -41,7 +41,7 @@ Right-click opens it. Lost it? Craft a new one from a book and a copper ingot, o
 | Makes sound | no | no | no | for everyone in its hearing range | for you, anywhere in your inventory; put down: like a Radio |
 
 The **Speaker** has no screen: placed against a Radio (or against a speaker that is already connected) it makes that
-radio heard 4 blocks further.
+radio heard 4 blocks further. A Portable Radio that is put down has to stand on top of the speaker.
 
 The switch on the blocks works with an empty main hand (the offhand may hold anything); with an item in the main
 hand, sneaking places or uses that item as usual. The screens have a *Turn off* / *Turn on* button as well. An antenna
@@ -70,9 +70,10 @@ sneak. `E` (the inventory key) closes the screens, unless you are typing into a 
 - **Portable Radio** (item): its tuner lists the stations that arrive where you stand. It plays while it is anywhere
   in your inventory, only for you, at full volume inside the signal range; past the range it fades out over the next
   10 blocks (a quarter of the range above 40). The first portable radio in the inventory that is switched on and
-  tuned plays. The item's tooltip shows its station. Sneak + right-click on a block **puts it down**: there it is a
-  small radio that plays to everyone within 10 blocks, with the same tuner as the Radio block; speakers add 4 blocks
-  each to it as well. A bare hand breaks it at once to take it along again; station, volume and on/off travel with it
+  tuned plays. The item's tooltip shows its station, and the item itself shows whether it is on (green lights and the
+  antenna pulled out when it is switched on and tuned). Sneak + right-click on a block **puts it down**: there it is a
+  small radio with the tuner and the hearing range of the Radio block (4 blocks). Speakers add to it only when it
+  stands on top of one; more speakers can be chained to that one. A bare hand breaks it at once to take it along again; station, volume and on/off travel with it
   both ways.
 - **The front shows the state**: no station, switched off or no signal = still, red light; otherwise the transmitter's
   mast sends waves (the radio's speaker: rings), the meter moves and the bars light up (transmitter and amplifier:
@@ -81,8 +82,8 @@ sneak. `E` (the inventory key) closes the screens, unless you are typing into a 
 - **Far away**: transmitters and amplifiers keep sending when nobody is near them and their chunks are not loaded;
   the server remembers every one of them (also across restarts), so a signal does not stop at the edge of the view
   distance.
-- **Direction**: 70 % of a Radio block's sound plays evenly in both ears, 30 % comes from the side the block is on
-  (left or right; ahead and behind sound the same). The share can be changed in the config.
+- **Direction**: a Radio block's sound comes from the block, like any sound in the world, and follows at once when
+  you turn. A Portable Radio you carry plays in both ears alike.
 - If the same station can be heard from several places (two radios, or a radio and your portable radio), only the
   loudest one plays, so nothing echoes. Up to six different stations play at once.
 - Each player's own volume slider is in *Options → Music & Sounds → Radio*.
@@ -135,7 +136,7 @@ for the amplifier, teak for the radios.
 
 - MP3 only: AAC, Ogg/Opus and HLS streams show "Cannot play this stream". About 70 % of the Radio-Browser
   catalogue is MP3.
-- Stereo streams are mixed down to mono before the mod's own left/right panning.
+- Stereo streams are mixed down to mono, so that the game can place the sound at the radio.
 - Some stations only allow known player apps and refuse the connection (SomaFM, for example).
 - A speaker makes its radio heard further; the sound still comes from the radio, not from the speaker.
 - Version 2.0.0 split the Radio into transmitter and receivers. Radios from a 1.x world become Radio Transmitters
@@ -207,21 +208,17 @@ World Radio Guide (shapeless, in the Misc tab): a book and a copper ingot.
   "antennaStep": 32,
   "maxAntenna": 32,
   "hearingBase": 4,
-  "portableHearing": 10,
   "speakerStep": 4,
   "hearingMax": 64,
-  "maxStations": 6,
-  "directionalShare": 0.3
+  "maxStations": 6
 }
 ```
 
 `baseRange`, `antennaStep` and `maxAntenna` (signal range) and `hearingBase`, `speakerStep` and `hearingMax` (how far
-a Radio block is heard: without speakers, more per speaker, and at most) and `portableHearing` (a Portable Radio that
-is put down, without speakers) are read by the server. Older files are
+a Radio block is heard: without speakers, more per speaker, and at most) are read by the server. Older files are
 carried over: the new entries are added, a
 `ranges` list from 0.1/0.2 is dropped, and a 0.3 file (no `configVersion`) with the old default step of 8 is moved to
-32. `maxStations` (at most 8, which is what the sound engine allows) and `directionalShare` (0 = all at the player,
-1 = fully left/right) are read by each player's game. The "+32 blocks each" and "+4 blocks each" in the tooltips
+32. `maxStations` (at most 8, which is what the sound engine allows) is read by each player's game. The "+32 blocks each" and "+4 blocks each" in the tooltips
 come from the player's own file.
 
 ## Commands (operators)
@@ -238,8 +235,8 @@ come from the player's own file.
 Java 25, `./gradlew build` → `build/libs/worldradio-<version>.jar`. Needs Fabric API on client and server.
 
 Test tools in `tools/`: `test-signal.sh` (signal graph, antenna range and level, volume and reception curves, what a
-portable radio picks up, source choice, panning – plain Java), `stream-probe.sh` (decodes live streams outside
-Minecraft; `--pan -1|0|1` measures the stereo mix), `dev-test-network.sh` (RCON test against the dev server),
+portable radio picks up, source choice – plain Java), `stream-probe.sh` (decodes live streams outside
+Minecraft), `dev-test-network.sh` (RCON test against the dev server),
 `dev-screenshot.sh` (dev client screenshots, clicks with an item in hand, using the held item, the on/off button,
 list clicks, renaming, the volume slider, typing, hovering, walking and circling, and a per-second log of what the
 player hears).

@@ -1,0 +1,1 @@
+item replace entity @a hotbar.0 with worldradio:portable_radio[worldradio:tuning={url:"http://stream2.early1900s.org:8000/",name:"Radio Dismuke",enabled:true,volume:0.3f}]

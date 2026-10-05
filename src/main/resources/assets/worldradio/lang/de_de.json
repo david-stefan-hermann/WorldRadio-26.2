@@ -64,6 +64,7 @@
   "worldradio.hearing": "Hörweite %s Blöcke (%s Lautsprecher)",
   "worldradio.hearing.one": "Hörweite %s Blöcke (1 Lautsprecher)",
   "worldradio.hearing.hint": "Stell Lautsprecher an das Radio oder an einen schon verbundenen Lautsprecher, um die Hörweite zu erhöhen (je +%s Blöcke). Der Ton wird mit dem Abstand leiser und blendet kurz hinter dieser Weite aus.",
+  "worldradio.hearing.hint.portable": "Stell das Kofferradio auf einen Lautsprecher, um die Hörweite zu erhöhen (+%s Blöcke); an diesen lassen sich weitere Lautsprecher anreihen. Der Ton wird mit dem Abstand leiser und blendet kurz hinter dieser Weite aus.",
   "worldradio.channel.host": "Sendet über seinen Radiosender (Reichweite %s Blöcke)",
   "worldradio.channel.nohost": "Mit keinem Radiosender verbunden",
   "worldradio.channel.hint": "Ein weiterer Sender für einen Radiosender. Stell ihn an den Sender oder an einen seiner Kanäle.",
@@ -105,6 +106,8 @@
   "worldradio.book.receiver.motto": "„Guten Abend, liebe Hörerinnen und Hörer.“",
   "worldradio.book.receiver.any": "Beliebige Bretter passen.",
   "worldradio.book.receiver.use": "Rechtsklick: Sender wählen und Lautstärke einstellen. Schleichen + Rechtsklick mit leerer Hand: ein oder aus. Es ist %s Blöcke weit zu hören, Lautsprecher tragen es weiter.",
+  "worldradio.book.heading.direction": "Richtung",
+  "worldradio.book.receiver.direction": "Der Ton kommt vom Block: Drehst du dich, bleibt er dort, wo das Radio steht. Ein Kofferradio, das du trägst, spielt auf beiden Ohren gleich.",
   "worldradio.book.receiver.silent": "Stumm? Es spielt nur, solange es eingeschaltet und eingestellt ist und das Signal seines Senders ankommt.",
 
   "worldradio.book.speaker.text": "Macht ein Radio weiter hörbar: Jeder Lautsprecher bringt %1$s Blöcke, bis zu %2$s.",
@@ -114,9 +117,10 @@
 
   "worldradio.book.portable.text": "Ein Radio zum Mitnehmen. Es spielt nur für dich, solange es irgendwo in deinem Inventar liegt und das Signal seines Senders dich erreicht.",
   "worldradio.book.portable.motto": "„Musik, wohin du auch gehst.“",
+  "worldradio.book.portable.item": "Eingeschaltet und mit Sender zeigt das Item grüne Lichter und die Antenne.",
   "worldradio.book.portable.use": "Rechtsklick: der Tuner mit Sendern und Lautstärke. Schleichen + Rechtsklick in die Luft: ein oder aus. Liegen mehrere im Inventar, spielt das erste, das eingeschaltet ist.",
   "worldradio.book.heading.place": "Hinstellen",
-  "worldradio.book.portable.place": "Schleichen + Rechtsklick auf einen Block stellt es hin. Dort spielt es wie ein Radio für alle im Umkreis von %s Blöcken, mit Lautsprechern weiter. Mit bloßer Hand ist es sofort abgebaut und wieder dabei: Der Sender bleibt eingestellt.",
+  "worldradio.book.portable.place": "Schleichen + Rechtsklick auf einen Block stellt es hin. Dort spielt es wie ein Radio für alle im Umkreis von %s Blöcken. Steht es auf einem Lautsprecher, ist es weiter zu hören; an diesen lassen sich weitere Lautsprecher anreihen. Mit bloßer Hand ist es sofort abgebaut und wieder dabei: Der Sender bleibt eingestellt.",
 
   "worldradio.book.range": "Reichweite & Antennen",
   "worldradio.book.range.text": "Ein Radiosender reicht %1$s Blöcke weit. Jeder Antennenblock, der gerade darauf gestapelt ist, bringt %2$s mehr, bis zu %3$s Antennenblöcken (%4$s Blöcke).",
