@@ -15,22 +15,24 @@ public class MakeResources {
     static final int[] ROTATIONS = {0, 90, 180, 270};
 
     public static void main(String[] args) throws IOException {
-        write(ASSETS.resolve("items/portable_radio.json"), """
-                {
-                  "model": {
-                    "type": "minecraft:model",
-                    "model": "worldradio:item/portable_radio"
-                  }
-                }
-                """);
-        write(ASSETS.resolve("models/item/portable_radio.json"), """
-                {
-                  "parent": "minecraft:item/generated",
-                  "textures": {
-                    "layer0": "worldradio:item/portable_radio"
-                  }
-                }
-                """);
+        for (String item : new String[]{"portable_radio", "guide_book"}) {
+            write(ASSETS.resolve("items/" + item + ".json"), """
+                    {
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "worldradio:item/%s"
+                      }
+                    }
+                    """.formatted(item));
+            write(ASSETS.resolve("models/item/" + item + ".json"), """
+                    {
+                      "parent": "minecraft:item/generated",
+                      "textures": {
+                        "layer0": "worldradio:item/%s"
+                      }
+                    }
+                    """.formatted(item));
+        }
         // the speaker has a facing and is lit while its radio plays
         StringBuilder speaker = new StringBuilder("{\n  \"variants\": {\n");
         for (int lit = 0; lit < 2; lit++) {

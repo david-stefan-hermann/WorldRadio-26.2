@@ -10,6 +10,7 @@ import worldradio.client.audio.SourceTracker;
 import worldradio.client.audio.StationStream;
 import worldradio.client.audio.StreamPool;
 import worldradio.client.screen.AmplifierScreen;
+import worldradio.client.screen.GuideBookScreen;
 import worldradio.client.screen.RadioScreen;
 import worldradio.client.screen.TunerScreen;
 
@@ -18,7 +19,7 @@ import java.util.Map;
 
 /**
  * With -Dworldradio.dev.screenshot=NAME the client waits after joining, optionally opens a screen
- * (-Dworldradio.dev.screen=radio|browse|url|search|amplifier|tuner,x,y,z, portable, creative or sounds), saves screenshots/NAME.png and NAME-b.png, logs what it
+ * (-Dworldradio.dev.screen=radio|browse|url|search|amplifier|tuner,x,y,z, portable, creative, sounds or book), saves screenshots/NAME.png and NAME-b.png, logs what it
  * hears every second and quits after -Dworldradio.dev.ticks (default 200). -Dworldradio.dev.walk=dx,dz moves the
  * player by that much every second after the first screenshot (distance test for the volume curve).
  */
@@ -61,6 +62,7 @@ public final class DevClientHooks {
         if (ticks >= 100 && ticks <= 141 && System.getProperty("worldradio.dev.hover") != null) hoverRangeLine(minecraft, ticks <= 140);
         if (minecraft.gui.screen() instanceof RadioScreen radio) radioScreenTests(radio);
         if (minecraft.gui.screen() instanceof TunerScreen tuner) tunerScreenTests(tuner);
+        if (minecraft.gui.screen() instanceof GuideBookScreen book) bookShots(minecraft, book, name);
         if (ticks == 130 || ticks == end - 20) minecraft.gui.toastManager().clear(); // join/tutorial toasts
         if (ticks == 140) grab(minecraft, name + ".png");
         if (ticks >= 40 && ticks % 20 == 0) {
@@ -114,6 +116,21 @@ public final class DevClientHooks {
         }
     }
 
+    /**
+     * Guide book (-Dworldradio.dev.screen=book): from tick 150 every page is saved as NAME-01.png, NAME-02.png, ...,
+     * one every ten ticks; the page is turned two ticks after its shot so the next one is drawn in time. Toasts are
+     * cleared and the mouse is kept in the corner meanwhile.
+     */
+    private static void bookShots(Minecraft minecraft, GuideBookScreen book, String name) {
+        int n = (ticks - 150) / 10, phase = (ticks - 150) % 10;
+        if (ticks < 145 || n >= book.pageCount()) return;
+        minecraft.gui.toastManager().clear(); // "new recipe" of the recipe check
+        moveMouse(minecraft, 0, 0); // no item tooltip in the shots
+        if (ticks < 150) return;
+        if (phase == 0) grab(minecraft, String.format("%s-%02d.png", name, n + 1));
+        if (phase == 2) book.turnTo(n + 1);
+    }
+
     /** The block of -Dworldradio.dev.screen=...,x,y,z; the origin for screens without a block. */
     private static BlockPos powerPos() {
         String[] p = System.getProperty("worldradio.dev.screen", "radio,0,0,0").split(",");
@@ -131,6 +148,10 @@ public final class DevClientHooks {
             minecraft.gui.setScreen(screen);
             boolean ok = ((net.fabricmc.fabric.api.client.creativetab.v1.FabricCreativeModeInventoryScreen) screen).setSelectedTab(WorldRadio.TAB);
             WorldRadio.LOGGER.info("Dev: opened the creative inventory on the World Radio tab: {}", ok);
+            return;
+        }
+        if (p[0].trim().equals("book")) {
+            minecraft.gui.setScreen(new GuideBookScreen(0));
             return;
         }
         if (p[0].trim().equals("sounds")) {
@@ -246,13 +267,18 @@ public final class DevClientHooks {
     private static void hoverRangeLine(Minecraft minecraft, boolean on) {
         if (worldradio.client.screen.RadioUi.lastRangeX < 0) return;
         double scale = on ? minecraft.getWindow().getGuiScale() : 0;
+        moveMouse(minecraft, (worldradio.client.screen.RadioUi.lastRangeX + 20) * scale,
+                (worldradio.client.screen.RadioUi.lastRangeY + 4) * scale);
+    }
+
+    private static void moveMouse(Minecraft minecraft, double xpos, double ypos) {
         try {
             var x = net.minecraft.client.MouseHandler.class.getDeclaredField("xpos");
             var y = net.minecraft.client.MouseHandler.class.getDeclaredField("ypos");
             x.setAccessible(true);
             y.setAccessible(true);
-            x.setDouble(minecraft.mouseHandler, (worldradio.client.screen.RadioUi.lastRangeX + 20) * scale);
-            y.setDouble(minecraft.mouseHandler, (worldradio.client.screen.RadioUi.lastRangeY + 4) * scale);
+            x.setDouble(minecraft.mouseHandler, xpos);
+            y.setDouble(minecraft.mouseHandler, ypos);
         } catch (ReflectiveOperationException e) {
             WorldRadio.LOGGER.warn("Dev: cannot move the mouse: {}", e.toString());
         }

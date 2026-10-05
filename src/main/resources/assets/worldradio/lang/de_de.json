@@ -73,5 +73,75 @@
 
   "worldradio.amplifier.count": "%s Signale",
   "worldradio.amplifier.none": "Kein Radiosignal erreicht diesen Verstärker.",
-  "worldradio.amplifier.row": "%s, %s, %s · %s m · Sprünge: %s"
+  "worldradio.amplifier.row": "%s, %s, %s · %s m · Sprünge: %s",
+
+  "item.worldradio.guide_book": "World-Radio-Handbuch",
+  "worldradio.book.heading.crafting": "Herstellung",
+  "worldradio.book.heading.use": "Bedienung",
+
+  "worldradio.book.start": "Erste Schritte",
+  "worldradio.book.start.text": "World Radio bringt Internetradio in deine Welt. Ein Radiosender schickt einen Sender als Signal aus, und ein Radio oder ein Kofferradio in seiner Reichweite spielt ihn.",
+  "worldradio.book.start.motto": "„Hier ist World Radio. Bleiben Sie dran.“",
+  "worldradio.book.heading.steps": "Drei Schritte",
+  "worldradio.book.start.step1": "Radiosender aufstellen, rechtsklicken und einen Sender wählen.",
+  "worldradio.book.start.step2": "Antennenblöcke daraufstapeln für mehr Reichweite.",
+  "worldradio.book.start.step3": "Ein Radio in der Reichweite aufstellen, rechtsklicken und den Sender wählen.",
+
+  "worldradio.book.transmitter.text": "Schickt seinen Sender als Signal an jedes Radio in Reichweite. Er selbst gibt keinen Ton von sich.",
+  "worldradio.book.transmitter.motto": "„Wir sind auf Sendung.“",
+  "worldradio.book.transmitter.use": "Rechtsklick: Sender wählen. Schleichen + Rechtsklick mit leerer Hand: ein oder aus. Ein ausgeschalteter Radiosender sendet nichts, auch seine Kanäle nicht.",
+  "worldradio.book.transmitter.more": "Er sendet weiter, auch wenn niemand in der Nähe ist. Ein Signal bleibt in seiner Dimension.",
+
+  "worldradio.book.channel.text": "Ein weiterer Sender für einen Radiosender. Stell ihn ein wie einen Radiosender und setz ihn an einen, oder an einen Kanal, der schon verbunden ist: daneben, darunter oder gestapelt, in jeder Form. Nur die Oberseite des Radiosenders bleibt frei für den Mast.",
+  "worldradio.book.channel.motto": "„Und nun zu unserem zweiten Programm.“",
+  "worldradio.book.channel.use": "Ein Kanal sendet nie allein und trägt keine Antenne: Sein Sender geht über den Mast des Radiosenders hinaus, mit dessen Reichweite. Ein Radiosender schickt bis zu %s Sender aus.",
+
+  "worldradio.book.amplifier.text": "Sendet jedes Signal, das ihn erreicht, mit voller Stärke und eigener Reichweite weiter. Beliebig viele Verstärker können aufeinander folgen.",
+  "worldradio.book.amplifier.motto": "„Übertragen vom Hauptsender.“",
+  "worldradio.book.amplifier.use": "Er trägt Antennenblöcke wie ein Radiosender. Rechtsklick zeigt die Signale, die er empfängt, mit Position des Radiosenders, Entfernung und Sprüngen. Einen Schalter hat er nicht.",
+
+  "worldradio.book.receiver.text": "Spielt einen Sender für alle in der Nähe. Sein Tuner zeigt die Sender, deren Signal diesen Ort erreicht.",
+  "worldradio.book.receiver.motto": "„Guten Abend, liebe Hörerinnen und Hörer.“",
+  "worldradio.book.receiver.any": "Beliebige Bretter passen.",
+  "worldradio.book.receiver.use": "Rechtsklick: Sender wählen und Lautstärke einstellen. Schleichen + Rechtsklick mit leerer Hand: ein oder aus. Es ist %s Blöcke weit zu hören, Lautsprecher tragen es weiter.",
+  "worldradio.book.receiver.silent": "Stumm? Es spielt nur, solange es eingeschaltet und eingestellt ist und das Signal seines Senders ankommt.",
+
+  "worldradio.book.speaker.text": "Macht ein Radio weiter hörbar: Jeder Lautsprecher bringt %1$s Blöcke, bis zu %2$s.",
+  "worldradio.book.speaker.motto": "„Etwas lauter, bitte!“",
+  "worldradio.book.speaker.any": "Beliebige Bretter und beliebige Wolle passen.",
+  "worldradio.book.speaker.use": "Setz ihn an ein Radio oder an einen Lautsprecher, der schon verbunden ist. Der Ton kommt weiter vom Radio. Ein verbundener Lautsprecher leuchtet, solange sein Radio spielt.",
+
+  "worldradio.book.portable.text": "Ein Radio zum Mitnehmen. Es spielt nur für dich, solange es irgendwo in deinem Inventar liegt und das Signal seines Senders dich erreicht.",
+  "worldradio.book.portable.motto": "„Musik, wohin du auch gehst.“",
+  "worldradio.book.portable.use": "Rechtsklick: der Tuner mit Sendern und Lautstärke. Schleichen + Rechtsklick: ein oder aus. Liegen mehrere im Inventar, spielt das erste, das eingeschaltet ist.",
+
+  "worldradio.book.range": "Reichweite & Antennen",
+  "worldradio.book.range.text": "Ein Radiosender reicht %1$s Blöcke weit. Jeder Antennenblock, der gerade darauf gestapelt ist, bringt %2$s mehr, bis zu %3$s Antennenblöcken (%4$s Blöcke).",
+  "worldradio.book.range.motto": "„Je höher der Mast, desto weiter die Musik.“",
+  "worldradio.book.heading.antenna": "Antennenblöcke",
+  "worldradio.book.range.blocks": "Blitzableiter, Endstäbe sowie Gitter und Ketten aus Eisen oder Kupfer. Sie lassen sich mischen.",
+  "worldradio.book.range.place": "Klick einen Antennenblock auf die Oberseite eines Radiosenders oder Verstärkers, um ihn zu setzen. Der Mast endet am ersten anderen Block.",
+  "worldradio.book.heading.display": "Anzeige vorn",
+  "worldradio.book.range.display": "Die Front leuchtet mit dem Mast: dunkel, solange es nichts zu senden gibt, dann je eine Stufe ohne Antenne, mit 1 bis 3 Antennenblöcken und mit 4 oder mehr.",
+  "worldradio.book.range.server": "Server können andere Werte einstellen.",
+
+  "worldradio.book.stations": "Sender finden",
+  "worldradio.book.stations.text": "Der Bildschirm eines Radiosenders oder Sendekanals findet Sender in vier Reitern.",
+  "worldradio.book.stations.motto": "„Bleiben Sie auf dieser Welle.“",
+  "worldradio.book.heading.favorites": "Favoriten",
+  "worldradio.book.stations.favorites": "Deine eigene Liste, die dich in jede Welt begleitet. Der Stern merkt den eingestellten Sender vor oder entfernt ihn, der Stift benennt einen um.",
+  "worldradio.book.heading.browse": "Stöbern und Suche",
+  "worldradio.book.stations.browse": "Stöbern zeigt die Sender von radio-browser.info nach Land und Region. Die Suche findet sie nach Name oder Genre.",
+  "worldradio.book.heading.url": "URL",
+  "worldradio.book.stations.url": "Füg eine beliebige Stream-Adresse ein. Playlists (.m3u, .pls) gehen auch.",
+  "worldradio.book.heading.streams": "Gut zu wissen",
+  "worldradio.book.stations.streams": "Es spielen nur MP3-Streams. Solange der Bildschirm offen ist, prüft er den Sender und zeigt den Songtitel oder warum der Stream nicht spielbar ist. Leeren entfernt den Sender.",
+
+  "worldradio.book.listening": "Hören",
+  "worldradio.book.listening.text": "Dein eigenes Spiel holt die Musik aus dem Internet und braucht dafür eine Verbindung. Der Server gibt nur das Signal weiter.",
+  "worldradio.book.listening.motto": "„Dreh auf!“",
+  "worldradio.book.heading.volume": "Lautstärke",
+  "worldradio.book.listening.volume": "Jedes Radio hat seinen eigenen Lautstärkeregler, der für alle gilt, die es hören. Dein eigener Regler: Optionen → Musik & Geräusche → Radio.",
+  "worldradio.book.heading.overlap": "Mehrere Radios",
+  "worldradio.book.listening.overlap": "Ist ein Sender von mehreren Radios zu hören, spielt nur das lauteste, es gibt also kein Echo. Bis zu %s verschiedene Sender spielen gleichzeitig."
 }

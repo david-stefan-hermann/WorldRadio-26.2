@@ -73,5 +73,75 @@
 
   "worldradio.amplifier.count": "%s signals",
   "worldradio.amplifier.none": "No radio signal reaches this amplifier.",
-  "worldradio.amplifier.row": "%s, %s, %s · %s m · hops: %s"
+  "worldradio.amplifier.row": "%s, %s, %s · %s m · hops: %s",
+
+  "item.worldradio.guide_book": "World Radio Guide",
+  "worldradio.book.heading.crafting": "Crafting",
+  "worldradio.book.heading.use": "Use",
+
+  "worldradio.book.start": "Getting Started",
+  "worldradio.book.start.text": "World Radio brings internet radio into your world. A Radio Transmitter sends a station as a signal, and a Radio or a Portable Radio inside its range plays it.",
+  "worldradio.book.start.motto": "\"This is World Radio. Stay tuned.\"",
+  "worldradio.book.heading.steps": "Three steps",
+  "worldradio.book.start.step1": "Place a Radio Transmitter, right-click it and pick a station.",
+  "worldradio.book.start.step2": "Stack antenna blocks on top of it for more range.",
+  "worldradio.book.start.step3": "Place a Radio inside the range, right-click it and choose the station.",
+
+  "worldradio.book.transmitter.text": "Sends its station as a signal to every radio in range. It makes no sound itself.",
+  "worldradio.book.transmitter.motto": "\"We are on the air.\"",
+  "worldradio.book.transmitter.use": "Right-click: pick a station. Sneak + right-click with an empty hand: on or off. A transmitter that is switched off sends nothing, its channels included.",
+  "worldradio.book.transmitter.more": "It keeps sending while nobody is near. A signal stays in its dimension.",
+
+  "worldradio.book.channel.text": "One more station for a transmitter. Tune it like a transmitter and put it against one, or against a channel that is already connected: beside it, below it or stacked, in any shape. Only the top of the transmitter stays free for the mast.",
+  "worldradio.book.channel.motto": "\"And now over to our second programme.\"",
+  "worldradio.book.channel.use": "A channel never sends alone and takes no antenna: its station goes out over the transmitter's mast, with the transmitter's range. One transmitter sends up to %s stations.",
+
+  "worldradio.book.amplifier.text": "Sends every signal that reaches it on again, at full strength and with its own range. Any number of amplifiers can follow one another.",
+  "worldradio.book.amplifier.motto": "\"Relayed from the main transmitter.\"",
+  "worldradio.book.amplifier.use": "It takes antenna blocks like a transmitter. Right-click lists the signals it receives, with the transmitter's position, the distance and the hops. It has no switch.",
+
+  "worldradio.book.receiver.text": "Plays a station to everyone nearby. Its tuner lists the stations whose signal reaches this place.",
+  "worldradio.book.receiver.motto": "\"Good evening, dear listeners.\"",
+  "worldradio.book.receiver.any": "Any planks will do.",
+  "worldradio.book.receiver.use": "Right-click: choose a station and set the volume. Sneak + right-click with an empty hand: on or off. It is heard for %s blocks, and Speakers carry it further.",
+  "worldradio.book.receiver.silent": "Silent? It plays only while it is switched on, tuned, and the signal of its station reaches it.",
+
+  "worldradio.book.speaker.text": "Makes a radio heard further: every speaker adds %1$s blocks, up to %2$s.",
+  "worldradio.book.speaker.motto": "\"A little louder, please!\"",
+  "worldradio.book.speaker.any": "Any planks and any wool will do.",
+  "worldradio.book.speaker.use": "Put it against a radio, or against a speaker that is already connected. The sound still comes from the radio. A connected speaker lights up while its radio plays.",
+
+  "worldradio.book.portable.text": "A radio to carry. It plays to you alone while it is anywhere in your inventory, as long as the signal of its station reaches you.",
+  "worldradio.book.portable.motto": "\"Music wherever you go.\"",
+  "worldradio.book.portable.use": "Right-click: the tuner, with stations and volume. Sneak + right-click: on or off. Of several in the inventory, the first one that is switched on plays.",
+
+  "worldradio.book.range": "Range & Antennas",
+  "worldradio.book.range.text": "A transmitter reaches %1$s blocks. Every antenna block stacked straight on top of it adds %2$s more, up to %3$s antenna blocks (%4$s blocks).",
+  "worldradio.book.range.motto": "\"The higher the mast, the further the music.\"",
+  "worldradio.book.heading.antenna": "Antenna blocks",
+  "worldradio.book.range.blocks": "Lightning rods, end rods, and bars and chains of iron or copper. They can be mixed.",
+  "worldradio.book.range.place": "Click an antenna block onto the top of a transmitter or an amplifier to place it. The mast ends at the first other block.",
+  "worldradio.book.heading.display": "Front display",
+  "worldradio.book.range.display": "The front lights up with the mast: dark while there is nothing to send, then one step each without antenna, with 1 to 3 antenna blocks, and with 4 or more.",
+  "worldradio.book.range.server": "Servers may set other numbers.",
+
+  "worldradio.book.stations": "Finding Stations",
+  "worldradio.book.stations.text": "The screen of a transmitter or a channel finds stations in four tabs.",
+  "worldradio.book.stations.motto": "\"Don't touch that dial.\"",
+  "worldradio.book.heading.favorites": "Favorites",
+  "worldradio.book.stations.favorites": "Your own list, which comes with you into every world. The star adds or removes the station that is tuned in, the pencil renames one.",
+  "worldradio.book.heading.browse": "Browse and Search",
+  "worldradio.book.stations.browse": "Browse lists the stations of radio-browser.info by country and region. Search finds them by name or genre.",
+  "worldradio.book.heading.url": "URL",
+  "worldradio.book.stations.url": "Paste any stream address. Playlists (.m3u, .pls) work too.",
+  "worldradio.book.heading.streams": "Good to know",
+  "worldradio.book.stations.streams": "Only MP3 streams play. While the screen is open it checks the station and shows the song title, or why the stream cannot be played. Clear removes the station.",
+
+  "worldradio.book.listening": "Listening",
+  "worldradio.book.listening.text": "Your own game streams the music, so it needs an internet connection. The server only passes the signal on.",
+  "worldradio.book.listening.motto": "\"Turn it up!\"",
+  "worldradio.book.heading.volume": "Volume",
+  "worldradio.book.listening.volume": "Every radio has its own volume slider, the same for everyone who hears it. Your own control is Options → Music & Sounds → Radio.",
+  "worldradio.book.heading.overlap": "Several radios",
+  "worldradio.book.listening.overlap": "Where one station is heard from several radios, only the loudest one plays, so nothing echoes. Up to %s different stations play at once."
 }

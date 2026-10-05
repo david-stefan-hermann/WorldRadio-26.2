@@ -15,6 +15,7 @@
 #        ENTER=1 (press Enter at tick 85)   VOLUME=0.4 (move the volume slider at tick 80)
 #        HOVER=1 (put the mouse on the screen's range line from tick 100, so its tooltip is in the shot)
 #        HOLD=item_id (the server puts that item into the player's main hand on join, e.g. minecraft:stick)
+#        PLAYER=name (join under that name instead of a random Player123, to be the same player in the next run)
 #        OFFHAND=item_id (same for the offhand, e.g. minecraft:shield – the sneak switch must still work)
 # The command files hold one server command per line (without leading slash).
 set -u
@@ -45,6 +46,7 @@ EXTRA=()
 [ -n "${USE:-}" ] && EXTRA+=(-PdevUse="$USE")
 [ -n "${USEITEM:-}" ] && EXTRA+=(-PdevUseItem="$USEITEM")
 [ -n "${HOVER:-}" ] && EXTRA+=(-PdevHover=1)
+[ -n "${PLAYER:-}" ] && EXTRA+=(-PdevUser="$PLAYER")
 SERVER_EXTRA=()
 [ -n "${HOLD:-}" ] && SERVER_EXTRA+=(-PdevHold="$HOLD")
 [ -n "${OFFHAND:-}" ] && SERVER_EXTRA+=(-PdevOffhand="$OFFHAND")

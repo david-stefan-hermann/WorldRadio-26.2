@@ -1,0 +1,3 @@
+clear @a worldradio:guide_book 0
+recipe take @a worldradio:guide_book
+recipe give @a worldradio:guide_book

@@ -11,7 +11,9 @@ import worldradio.block.AmplifierBlockEntity;
 import worldradio.block.RadioBlockEntity;
 import worldradio.block.ReceiverBlockEntity;
 import worldradio.block.SignalBlock;
+import worldradio.client.screen.GuideBookScreen;
 import worldradio.client.screen.TunerScreen;
+import worldradio.item.GuideBookItem;
 import worldradio.item.PortableRadioItem;
 import worldradio.client.audio.RadioSoundInstance;
 import worldradio.client.audio.SourceTracker;
@@ -36,6 +38,7 @@ public class WorldRadioClient implements ClientModInitializer {
             else if (level.getBlockEntity(pos) instanceof AmplifierBlockEntity) minecraft.gui.setScreen(new AmplifierScreen(pos));
         };
         PortableRadioItem.screenOpener = hand -> Minecraft.getInstance().gui.setScreen(new TunerScreen(hand));
+        GuideBookItem.screenOpener = () -> Minecraft.getInstance().gui.setScreen(new GuideBookScreen());
         FavouritesCache.load();
         ClientPlayNetworking.registerGlobalReceiver(Packets.FavouritesSync.TYPE,
                 (payload, context) -> FavouritesCache.importLegacy(payload.favourites()));

@@ -59,6 +59,8 @@ if (project.hasProperty('devScreenshot')) {
                 if (project.hasProperty('devSearch')) vmArg "-Dworldradio.dev.search=${project.devSearch}"
                 if (project.hasProperty('devCountry')) vmArg "-Dworldradio.dev.country=${project.devCountry}"
                 programArgs "--quickPlayMultiplayer", "localhost:25598", "--width", "1280", "--height", "720"
+                // the same player again in the next run (the welcome book must come once only)
+                if (project.hasProperty('devUser')) programArgs "--username", project.devUser
             }
             server {
                 vmArg "-Dworldradio.dev.view=${view}"

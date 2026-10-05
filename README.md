@@ -22,6 +22,14 @@ Get `worldradio-<version>.jar` from [Modrinth](https://modrinth.com/mod/world-ra
 Requires Minecraft 26.2, Fabric Loader 0.19.3+ and Java 25. The server never streams anything: it only stores
 which station a transmitter sends and what each radio is set to, every player's game fetches the stream itself.
 
+## Guide book
+
+Every player gets a **World Radio Guide** the first time they join: a book with a chapter for every block and for
+range and antennas, finding stations and listening, with the recipes and build pictures, in English and German.
+Right-click opens it. Lost it? Craft a new one from a book and a copper ingot, or take it from the creative tab.
+
+![The guide book open on the Range & Antennas chapter](docs/book.png)
+
 ## Usage
 
 | Action | Radio Transmitter | Radio Channel | Radio Amplifier | Radio | Portable Radio |
@@ -179,6 +187,8 @@ Portable Radio:
 I N I      I = iron ingot, N = note block
   R        R = redstone
 ```
+
+World Radio Guide (shapeless, in the Misc tab): a book and a copper ingot.
 
 ## Config
 

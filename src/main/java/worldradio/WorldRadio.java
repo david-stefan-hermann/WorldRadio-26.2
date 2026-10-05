@@ -41,6 +41,7 @@ import worldradio.block.SpeakerBlock;
 import worldradio.block.RadioBlockEntity;
 import worldradio.block.ReceiverBlock;
 import worldradio.block.ReceiverBlockEntity;
+import worldradio.item.GuideBookItem;
 import worldradio.item.PortableRadioItem;
 import worldradio.item.Tuning;
 import worldradio.net.Packets;
@@ -96,6 +97,7 @@ public class WorldRadio implements ModInitializer {
     public static final Item RECEIVER_ITEM = registerItem("receiver", props -> new BlockItem(RECEIVER, props.useBlockDescriptionPrefix()));
     public static final Item SPEAKER_ITEM = registerItem("speaker", props -> new BlockItem(SPEAKER, props.useBlockDescriptionPrefix()));
     public static final Item PORTABLE_RADIO_ITEM = registerItem("portable_radio", props -> new PortableRadioItem(props.stacksTo(1)));
+    public static final Item GUIDE_BOOK_ITEM = registerItem("guide_book", props -> new GuideBookItem(props.stacksTo(1)));
 
     /** The mod's own creative tab; the items are not listed anywhere else. */
     public static final CreativeModeTab TAB = Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, id("main"),
@@ -103,6 +105,7 @@ public class WorldRadio implements ModInitializer {
                     .icon(() -> new ItemStack(RECEIVER_ITEM))
                     .title(Component.translatable("itemGroup.worldradio"))
                     .displayItems((params, output) -> {
+                        output.accept(GUIDE_BOOK_ITEM);
                         output.accept(RADIO_ITEM);
                         output.accept(CHANNEL_ITEM);
                         output.accept(AMPLIFIER_ITEM);
@@ -125,6 +128,7 @@ public class WorldRadio implements ModInitializer {
         ServerTickEvents.END_LEVEL_TICK.register(level -> RadioNetwork.get(level).tick());
         ServerLifecycleEvents.SERVER_STOPPED.register(server -> RadioNetwork.clear());
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
+            GuideBookItem.giveBookOnce(handler.getPlayer());
             Packets.sendFavourites(handler.getPlayer());
             RadioNetwork.get((net.minecraft.server.level.ServerLevel) handler.getPlayer().level()).sendTo(handler.getPlayer());
         });

@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.0
+- New **World Radio Guide**: a guide book with a chapter for every block (what it does, its recipe, how to use it) and for range and antennas, finding stations and listening, with build pictures. English and German.
+- Every player gets one guide the first time they join. A new one is crafted from a book and a copper ingot; it is also the first item of the creative tab.
+
 ## 2.0.0
 Radio now works like real radio: transmitters send a signal, and sound comes from the radios that receive it.
 
